@@ -21,8 +21,8 @@ A terminal UI CLI tool for learning and replaying IR codes via a zigbee2mqtt-con
 │    mute                     │                      │
 └─────────────────────────────┴──────────────────────┘
 │ MQTT: connected  [r]eplay [s]ave [d]elete [c]lear  │
-│ :                                                   │
-└─────────────────────────────────────────────────────┘
+│ :                                                  │
+└────────────────────────────────────────────────────┘
 ```
 
 - **Left top**: Buffer pane — live stream of received IR codes

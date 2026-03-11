@@ -67,16 +67,16 @@ switching between devices or brokers without editing the file.
 Every config field has a corresponding flag. Only explicitly-provided flags override the
 file; unset flags leave the file value intact.
 
-| Flag | Description |
-|------|-------------|
-| `--config PATH` | Use a different config file |
-| `--mqtt-host HOST` | MQTT broker host |
-| `--mqtt-port PORT` | MQTT broker port |
-| `--mqtt-user USER` | MQTT username |
-| `--mqtt-password PASS` | MQTT password |
-| `--device NAME` | zigbee2mqtt device friendly name |
-| `--session FILE` | Session file path |
-| `--log FILE` | Write logs to file instead of stderr |
+| Flag                   | Description                          |
+|------------------------|--------------------------------------|
+| `--config PATH`        | Use a different config file          |
+| `--mqtt-host HOST`     | MQTT broker host                     |
+| `--mqtt-port PORT`     | MQTT broker port                     |
+| `--mqtt-user USER`     | MQTT username                        |
+| `--mqtt-password PASS` | MQTT password                        |
+| `--device NAME`        | zigbee2mqtt device friendly name     |
+| `--session FILE`       | Session file path                    |
+| `--log FILE`           | Write logs to file instead of stderr |
 
 ---
 
@@ -113,33 +113,33 @@ irlearn ui --device bedroom_ir       # override device for this session
 │    mute                     │                      │
 └─────────────────────────────┴──────────────────────┘
 │ MQTT: connected  [r]eplay [s]ave [d]elete [c]lear  │
-│ :                                                   │
-└─────────────────────────────────────────────────────┘
+│ :                                                  │
+└────────────────────────────────────────────────────┘
 ```
 
-| Pane | What it shows |
-|------|---------------|
-| **Buffer** (top-left) | Live stream of IR codes received from the device, most-recent first |
-| **Session** (bottom-left) | Commands saved to the current session file |
-| **Preview** (right) | Decoded byte length and hex preview of the selected item |
-| **Status bar** (bottom) | MQTT connection state and keyboard hint strip |
-| **Prompt line** | Vim-style `:` prompt, appears when naming a command |
+| Pane                      | What it shows                                                       |
+|---------------------------|---------------------------------------------------------------------|
+| **Buffer** (top-left)     | Live stream of IR codes received from the device, most-recent first |
+| **Session** (bottom-left) | Commands saved to the current session file                          |
+| **Preview** (right)       | Decoded byte length and hex preview of the selected item            |
+| **Status bar** (bottom)   | MQTT connection state and keyboard hint strip                       |
+| **Prompt line**           | Vim-style `:` prompt, appears when naming a command                 |
 
 ### Keyboard Shortcuts
 
-| Key | Action |
-|-----|--------|
-| `↑` / `k` | Move selection up |
-| `↓` / `j` | Move selection down |
-| `Tab` | Switch focus between Buffer and Session panes |
-| `r` | Replay selected item (test the IR code live) |
-| `s` | Save selected buffer item to session (prompts for name) |
-| `n` | Rename selected session command |
-| `d` | Delete selected item |
-| `C` | Clear all items from the buffer |
-| `l` | Send learn-mode command to device |
-| `L` | Toggle lock mode (see below) |
-| `q` / `Ctrl+C` | Quit |
+| Key            | Action                                                  |
+|----------------|---------------------------------------------------------|
+| `↑` / `k`      | Move selection up                                       |
+| `↓` / `j`      | Move selection down                                     |
+| `Tab`          | Switch focus between Buffer and Session panes           |
+| `r`            | Replay selected item (test the IR code live)            |
+| `s`            | Save selected buffer item to session (prompts for name) |
+| `n`            | Rename selected session command                         |
+| `d`            | Delete selected item                                    |
+| `C`            | Clear all items from the buffer                         |
+| `l`            | Send learn-mode command to device                       |
+| `L`            | Toggle lock mode (see below)                            |
+| `q` / `Ctrl+C` | Quit                                                    |
 
 ### Step-by-step: Learning a button
 
@@ -177,19 +177,19 @@ irlearn capture [flags]
 
 ### Flags
 
-| Flag | Default | Description |
-|------|---------|-------------|
-| `--timeout N` | `30` | Seconds to wait for an IR code before giving up |
-| `--verbose` | false | Print progress messages to stderr |
+| Flag          | Default | Description                                     |
+|---------------|---------|-------------------------------------------------|
+| `--timeout N` | `30`    | Seconds to wait for an IR code before giving up |
+| `--verbose`   | false   | Print progress messages to stderr               |
 
 All global flags (`--device`, `--mqtt-host`, etc.) also apply.
 
 ### Exit codes
 
-| Code | Meaning |
-|------|---------|
-| `0` | IR code received and printed to stdout |
-| `1` | Timeout — no code received within the timeout window |
+| Code | Meaning                                              |
+|------|------------------------------------------------------|
+| `0`  | IR code received and printed to stdout               |
+| `1`  | Timeout — no code received within the timeout window |
 
 ### Example — save a code to a file
 

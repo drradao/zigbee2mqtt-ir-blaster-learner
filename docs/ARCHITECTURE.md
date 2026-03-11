@@ -6,16 +6,16 @@ Developer guide to the internals of `irlearn`.
 
 ## Stack
 
-| Component | Library |
-|-----------|---------|
-| Language | Go (see `go.mod` for exact version) |
-| CLI framework | [Cobra](https://github.com/spf13/cobra) |
-| Dependency injection | [Uber FX](https://github.com/uber-go/fx) |
-| TUI framework | [bubbletea](https://github.com/charmbracelet/bubbletea) |
-| TUI styling | [lipgloss](https://github.com/charmbracelet/lipgloss) |
-| MQTT client | [paho.mqtt.golang](https://github.com/eclipse/paho.mqtt.golang) |
-| Config parsing | [yaml.v3](https://gopkg.in/yaml.v3) |
-| Logging | `log/slog` (stdlib) |
+| Component            | Library                                                         |
+|----------------------|-----------------------------------------------------------------|
+| Language             | Go (see `go.mod` for exact version)                             |
+| CLI framework        | [Cobra](https://github.com/spf13/cobra)                         |
+| Dependency injection | [Uber FX](https://github.com/uber-go/fx)                        |
+| TUI framework        | [bubbletea](https://github.com/charmbracelet/bubbletea)         |
+| TUI styling          | [lipgloss](https://github.com/charmbracelet/lipgloss)           |
+| MQTT client          | [paho.mqtt.golang](https://github.com/eclipse/paho.mqtt.golang) |
+| Config parsing       | [yaml.v3](https://gopkg.in/yaml.v3)                             |
+| Logging              | `log/slog` (stdlib)                                             |
 
 ---
 

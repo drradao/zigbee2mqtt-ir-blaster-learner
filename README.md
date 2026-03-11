@@ -18,8 +18,8 @@ Organise commands into named sessions, replay them on demand, and script headles
 │    mute                     │                      │
 └─────────────────────────────┴──────────────────────┘
 │ MQTT: connected  [r]eplay [s]ave [d]elete [c]lear  │
-│ :                                                   │
-└─────────────────────────────────────────────────────┘
+│ :                                                  │
+└────────────────────────────────────────────────────┘
 ```
 
 ## Quick Start
@@ -56,11 +56,11 @@ All config values can also be passed as flags — run `irlearn --help` for the f
 
 ## Documentation
 
-| Document | Audience |
-|----------|----------|
-| [Usage Manual](docs/USAGE_MANUAL.md) | End users — setup, TUI guide, keyboard shortcuts, troubleshooting |
-| [Architecture](docs/ARCHITECTURE.md) | Developers — package map, data flow, dependency injection |
-| [Feature Reference](docs/FEATURES.md) | Quick reference — MQTT payloads, session schema |
+| Document                              | Audience                                                          |
+|---------------------------------------|-------------------------------------------------------------------|
+| [Usage Manual](docs/USAGE_MANUAL.md)  | End users — setup, TUI guide, keyboard shortcuts, troubleshooting |
+| [Architecture](docs/ARCHITECTURE.md)  | Developers — package map, data flow, dependency injection         |
+| [Feature Reference](docs/FEATURES.md) | Quick reference — MQTT payloads, session schema                   |
 
 ## License
 
