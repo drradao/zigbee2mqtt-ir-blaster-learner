@@ -82,7 +82,7 @@ func runUI(cmd *cobra.Command, _ []string) error {
 	mqttClient.SetStatusChannel(statusCh)
 
 	// Subscribe forwards filtered MQTT messages into the channel consumed by the TUI.
-	if err := mqttClient.Subscribe(listenTopic, buildMQTTHandler(buf, mqttCh, logger)); err != nil {
+	if err := mqttClient.Subscribe(listenTopic, buildMQTTHandler(mqttCh, logger)); err != nil {
 		stopFX(app)
 		return fmt.Errorf("subscribe failed: %w", err)
 	}
@@ -118,9 +118,9 @@ func runUI(cmd *cobra.Command, _ []string) error {
 }
 
 // buildMQTTHandler returns an mqtt.MessageHandler that filters for
-// learned_ir_code payloads and forwards them to both the in-memory buffer
-// and the bubbletea channel.
-func buildMQTTHandler(buf *buffer.IRBuffer, ch chan buffer.IRMessage, logger *slog.Logger) mqtt.MessageHandler {
+// learned_ir_code payloads and forwards them to the bubbletea channel.
+// The TUI Update loop is the sole owner responsible for adding messages to the buffer.
+func buildMQTTHandler(ch chan buffer.IRMessage, logger *slog.Logger) mqtt.MessageHandler {
 	return func(topic string, payload []byte) {
 		code := extractCode(payload, logger)
 		if code == "" {
@@ -131,7 +131,6 @@ func buildMQTTHandler(buf *buffer.IRBuffer, ch chan buffer.IRMessage, logger *sl
 			Topic:      topic,
 			ReceivedAt: time.Now(),
 		}
-		buf.Add(msg)
 		select {
 		case ch <- msg:
 		default:
