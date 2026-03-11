@@ -4,16 +4,19 @@ import (
 	"encoding/base64"
 	"fmt"
 	"strings"
+	"time"
 
 	"github.com/dadao/zigbee2mqtt-ir-blaster-learner/internal/tui/styles"
 )
 
 // PreviewPane shows decoded details of the selected IR payload.
 type PreviewPane struct {
-	name    string
-	payload string // base64-encoded
-	width   int
-	height  int
+	name       string
+	payload    string // base64-encoded
+	topic      string
+	capturedAt time.Time
+	width      int
+	height     int
 }
 
 // NewPreviewPane creates an empty PreviewPane.
@@ -30,6 +33,28 @@ func (p *PreviewPane) SetName(name string) { p.name = name }
 // SetPayload updates the base64-encoded payload to preview.
 func (p *PreviewPane) SetPayload(b64 string) { p.payload = b64 }
 
+// SetMeta sets the MQTT topic and capture timestamp for the current selection.
+func (p *PreviewPane) SetMeta(topic string, capturedAt time.Time) {
+	p.topic = topic
+	p.capturedAt = capturedAt
+}
+
+// wrapString splits s into lines of at most width characters.
+func wrapString(s string, width int) []string {
+	if width <= 0 || s == "" {
+		return []string{s}
+	}
+	var lines []string
+	for len(s) > width {
+		lines = append(lines, s[:width])
+		s = s[width:]
+	}
+	if s != "" {
+		lines = append(lines, s)
+	}
+	return lines
+}
+
 // View renders the pane.
 func (p *PreviewPane) View() string {
 	title := styles.Title.Render("Preview")
@@ -43,22 +68,34 @@ func (p *PreviewPane) View() string {
 		if name == "" {
 			name = "—"
 		}
-		lines = append(lines, fmt.Sprintf("  Name:  %s", name))
-		lines = append(lines, fmt.Sprintf("  Bytes: %d", len(decoded)))
+		lines = append(lines, fmt.Sprintf("  Name:    %s", name))
+		lines = append(lines, fmt.Sprintf("  Size:    %d bytes", len(decoded)))
 
-		limit := 16
-		if len(decoded) < limit {
-			limit = len(decoded)
+		if p.topic != "" {
+			display := strings.TrimPrefix(p.topic, "zigbee2mqtt/")
+			lines = append(lines, fmt.Sprintf("  Topic:   %s", display))
 		}
-		hexParts := make([]string, limit)
-		for i, b := range decoded[:limit] {
-			hexParts[i] = fmt.Sprintf("%02X", b)
+
+		if !p.capturedAt.IsZero() {
+			now := time.Now()
+			var ts string
+			if p.capturedAt.Year() == now.Year() && p.capturedAt.YearDay() == now.YearDay() {
+				ts = p.capturedAt.Format("15:04:05")
+			} else {
+				ts = p.capturedAt.Format("Jan 2 15:04")
+			}
+			lines = append(lines, fmt.Sprintf("  Captured: %s", ts))
 		}
-		hexStr := strings.Join(hexParts, " ")
-		if len(decoded) > 16 {
-			hexStr += " …"
+
+		// Payload section — word-wrapped base64.
+		innerWidth := p.width - 6 // account for border + indent
+		if innerWidth < 10 {
+			innerWidth = 10
 		}
-		lines = append(lines, fmt.Sprintf("  Hex:   %s", hexStr))
+		lines = append(lines, "")
+		for _, chunk := range wrapString(p.payload, innerWidth) {
+			lines = append(lines, "  "+chunk)
+		}
 	}
 
 	content := title + "\n" + strings.Join(lines, "\n")

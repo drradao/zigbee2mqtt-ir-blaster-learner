@@ -203,18 +203,22 @@ func (m *Model) updatePreview() {
 		if sel != nil {
 			m.previewPane.SetName("")
 			m.previewPane.SetPayload(string(sel.Payload))
+			m.previewPane.SetMeta(sel.Topic, sel.ReceivedAt)
 		} else {
 			m.previewPane.SetName("")
 			m.previewPane.SetPayload("")
+			m.previewPane.SetMeta("", time.Time{})
 		}
 	} else {
 		sel := m.sessionPane.Selected()
 		if sel != nil {
 			m.previewPane.SetName(sel.Name)
 			m.previewPane.SetPayload(sel.Payload)
+			m.previewPane.SetMeta("", sel.CapturedAt)
 		} else {
 			m.previewPane.SetName("")
 			m.previewPane.SetPayload("")
+			m.previewPane.SetMeta("", time.Time{})
 		}
 	}
 }
