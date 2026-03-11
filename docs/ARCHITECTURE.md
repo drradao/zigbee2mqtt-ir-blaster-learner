@@ -58,8 +58,9 @@ Developer guide to the internals of `irlearn`.
         ├── update.go
         ├── view.go
         ├── messages.go             MQTTMessageReceived, StatusChanged, LoginSubmitted, LoginDismissed
-        ├── prompt.go               Vim-style prompt (supports Masked for passwords)
-        ├── login_modal.go          Inline credentials overlay (forward hook for reconnect)
+        ├── prompt.go               Single-line text input widget (used by modals)
+        ├── login_modal.go          Credentials overlay (User + Password fields)
+        ├── input_modal.go          Name input overlay (used for save and rename flows)
         ├── styles.go               (thin shim, imports tui/styles)
         ├── styles/                 Shared lipgloss styles — own leaf package
         │   └── styles.go           (avoids tui ↔ panes circular import)
@@ -191,7 +192,7 @@ sequenceDiagram
 
     Device->>Paho: MQTT publish on zigbee2mqtt/DEVICE
     Paho->>Buf: buf.Add(msg) [RWMutex write]
-    Paho->>Ch: ch <- msg (non-blocking; drops on full)
+    Paho->>Ch: ch <- msg (non-blocking, drops on full)
     BT->>Ch: waitForMQTT Cmd blocks on ch
     Ch-->>BT: MQTTMessageReceived delivered
     BT->>BT: Update → re-arm waitForMQTT
@@ -252,8 +253,8 @@ sequenceDiagram
     participant Repo as SessionRepository
 
     User->>TUI: press s (buffer pane)
-    TUI->>User: open vim-style prompt ":"
-    User->>TUI: type name + Enter
+    TUI->>User: open name input modal
+    User->>TUI: type name + Enter (or Esc to cancel)
     TUI->>TUI: append Command to session.Commands
     TUI->>Repo: Save(session)
     Repo->>Repo: marshal YAML → temp file → os.Rename (atomic)

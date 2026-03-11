@@ -1,8 +1,10 @@
 package tui
 
 import (
+	"encoding/json"
 	"time"
 
+	"github.com/atotto/clipboard"
 	tea "github.com/charmbracelet/bubbletea"
 
 	"github.com/dadao/zigbee2mqtt-ir-blaster-learner/internal/buffer"
@@ -28,18 +30,15 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		}
 	}
 
-	// Route key events to the prompt when it is active.
-	if m.prompt.Active() {
-		if _, ok := msg.(tea.KeyMsg); ok {
-			submit, cancel := m.prompt.Update(msg)
-			if cancel {
-				m.prompt.Close()
+	// Route key events to the input modal when it is active.
+	if m.inputModal.IsActive() {
+		if km, ok := msg.(tea.KeyMsg); ok {
+			submitted, dismissed, val := m.inputModal.Update(km)
+			if dismissed {
 				return m, nil
 			}
-			if submit {
-				val := m.prompt.Value()
-				m.prompt.Close()
-				return m, m.handlePromptSubmit(val)
+			if submitted {
+				return m, m.handleInputSubmit(val)
 			}
 			return m, nil
 		}
@@ -111,13 +110,19 @@ func (m *Model) handleKey(msg tea.KeyMsg) (tea.Model, tea.Cmd) {
 
 	case "s":
 		if m.active == paneBuffer && m.bufferPane.Selected() != nil {
-			m.promptContext = "save"
-			m.prompt.Open()
+			m.inputModal.Open("Save command", "save")
 		}
 
 	case "n":
-		m.promptContext = "rename"
-		m.prompt.Open()
+		if m.active == paneSession {
+			idx := m.sessionPane.Cursor()
+			if m.sess != nil && idx >= 0 && idx < len(m.sess.Commands) {
+				current := m.sess.Commands[idx].Name
+				m.inputModal.OpenWithValue("Rename command", "rename", current)
+			}
+		} else {
+			m.inputModal.Open("Rename command", "rename")
+		}
 
 	case "d":
 		m.deleteSelected()
@@ -132,19 +137,24 @@ func (m *Model) handleKey(msg tea.KeyMsg) (tea.Model, tea.Cmd) {
 
 	case "L":
 		m.lockMode = m.learnSvc.ToggleLockMode()
+
+	case "y":
+		m.yankPayload()
+
+	case "Y":
+		m.yankSendCommand()
 	}
 	return m, nil
 }
 
-func (m *Model) handlePromptSubmit(val string) tea.Cmd {
-	switch m.promptContext {
+func (m *Model) handleInputSubmit(val string) tea.Cmd {
+	switch m.inputModal.Context() {
 	case "save":
 		sel := m.bufferPane.Selected()
 		if sel != nil && val != "" {
-			b64 := string(sel.Payload)
 			cmd := session.Command{
 				Name:       val,
-				Payload:    b64,
+				Payload:    string(sel.Payload),
 				CapturedAt: sel.ReceivedAt,
 			}
 			m.sess.Commands = append(m.sess.Commands, cmd)
@@ -163,6 +173,35 @@ func (m *Model) handlePromptSubmit(val string) tea.Cmd {
 		}
 	}
 	return nil
+}
+
+func (m *Model) yankPayload() {
+	b64 := m.selectedPayload()
+	if b64 != "" {
+		_ = clipboard.WriteAll(b64)
+	}
+}
+
+func (m *Model) yankSendCommand() {
+	b64 := m.selectedPayload()
+	if b64 != "" {
+		js, _ := json.Marshal(map[string]string{"ir_code_to_send": b64})
+		_ = clipboard.WriteAll(string(js))
+	}
+}
+
+// selectedPayload returns the base64 payload for whichever pane is active.
+func (m *Model) selectedPayload() string {
+	if m.active == paneBuffer {
+		if sel := m.bufferPane.Selected(); sel != nil {
+			return string(sel.Payload)
+		}
+	} else {
+		if sel := m.sessionPane.Selected(); sel != nil {
+			return sel.Payload
+		}
+	}
+	return ""
 }
 
 func (m *Model) replaySelected() tea.Cmd {

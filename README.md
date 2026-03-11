@@ -17,8 +17,8 @@ Organise commands into named sessions, replay them on demand, and script headles
 │    volume_up                │                      │
 │    mute                     │                      │
 └─────────────────────────────┴──────────────────────┘
-│ MQTT: connected  [r]eplay [s]ave [d]elete [c]lear  │
-│ :                                                  │
+│ MQTT: connected  buf:3                             │
+│ [r]eplay [s]ave [n]ame [d]elete [C]lear [l]earn … │
 └────────────────────────────────────────────────────┘
 ```
 

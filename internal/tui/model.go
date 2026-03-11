@@ -40,15 +40,14 @@ type Model struct {
 	bufferPane  *panes.BufferPane
 	sessionPane *panes.SessionPane
 	previewPane *panes.PreviewPane
-	prompt      Prompt
+	inputModal  inputModal
 	loginModal  loginModal
 
-	active        activePane
-	connected     bool
-	lockMode      bool
-	width         int
-	height        int
-	promptContext string // "save" or "rename"
+	active    activePane
+	connected bool
+	lockMode  bool
+	width     int
+	height    int
 }
 
 // ModelParams groups all dependencies required to construct a Model.

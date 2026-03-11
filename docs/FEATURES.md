@@ -20,8 +20,8 @@ A terminal UI CLI tool for learning and replaying IR codes via a zigbee2mqtt-con
 │    volume_up                │                      │
 │    mute                     │                      │
 └─────────────────────────────┴──────────────────────┘
-│ MQTT: connected  [r]eplay [s]ave [d]elete [c]lear  │
-│ :                                                  │
+│ MQTT: connected  buf:3                             │
+│ [r]eplay [s]ave [n]ame [d]elete [C]lear [l]earn … │
 └────────────────────────────────────────────────────┘
 ```
 
@@ -29,7 +29,6 @@ A terminal UI CLI tool for learning and replaying IR codes via a zigbee2mqtt-con
 - **Left bottom**: Session commands pane — commands saved to the current session file
 - **Right**: Preview pane — byte length and hex preview of the selected item
 - **Bottom bar**: MQTT connection status + keyboard hint strip
-- **Prompt line**: Vim-style `:` prompt used when naming commands
 
 For keyboard shortcuts and a full operational guide, see [USAGE_MANUAL.md](USAGE_MANUAL.md).
 

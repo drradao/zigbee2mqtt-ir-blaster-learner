@@ -12,9 +12,12 @@ func (m *Model) View() string {
 		return "Loading…"
 	}
 
-	// Login modal takes over the full screen when active.
+	// Modals take over the full screen when active.
 	if m.loginModal.IsActive() {
 		return m.loginModal.View(m.width, m.height)
+	}
+	if m.inputModal.IsActive() {
+		return m.inputModal.View(m.width, m.height)
 	}
 
 	left := lipgloss.JoinVertical(lipgloss.Left,
@@ -25,16 +28,12 @@ func (m *Model) View() string {
 	main := lipgloss.JoinHorizontal(lipgloss.Top, left, right)
 
 	statusBar := m.renderStatusBar()
-
-	promptLine := m.prompt.View()
-	if promptLine == "" {
-		promptLine = StyleMuted.Render("  [r]eplay  [s]ave  [n]ame  [d]elete  [C]lear  [l]earn  [L]ock  [Tab]switch  [q]uit")
-	}
+	hint := StyleMuted.Render("  [r]eplay  [s]ave  [n]ame  [d]elete  [C]lear  [l]earn  [L]ock  [y]ank  [Y]ank-cmd  [Tab]switch  [q]uit")
 
 	return lipgloss.JoinVertical(lipgloss.Left,
 		main,
 		statusBar,
-		promptLine,
+		hint,
 	)
 }
 

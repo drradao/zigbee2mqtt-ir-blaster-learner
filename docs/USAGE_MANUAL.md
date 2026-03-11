@@ -134,8 +134,8 @@ irlearn ui --login                   # prompt for MQTT credentials before connec
 │    volume_up                │                      │
 │    mute                     │                      │
 └─────────────────────────────┴──────────────────────┘
-│ MQTT: connected  [r]eplay [s]ave [d]elete [c]lear  │
-│ :                                                  │
+│ MQTT: connected  buf:3                             │
+│ [r]eplay [s]ave [n]ame [d]elete [C]lear [l]earn … │
 └────────────────────────────────────────────────────┘
 ```
 
@@ -145,23 +145,24 @@ irlearn ui --login                   # prompt for MQTT credentials before connec
 | **Session** (bottom-left) | Commands saved to the current session file                          |
 | **Preview** (right)       | Decoded byte length and hex preview of the selected item            |
 | **Status bar** (bottom)   | MQTT connection state and keyboard hint strip                       |
-| **Prompt line**           | Vim-style `:` prompt, appears when naming a command                 |
 
 ### Keyboard Shortcuts
 
-| Key            | Action                                                  |
-|----------------|---------------------------------------------------------|
-| `↑` / `k`      | Move selection up                                       |
-| `↓` / `j`      | Move selection down                                     |
-| `Tab`          | Switch focus between Buffer and Session panes           |
-| `r`            | Replay selected item (test the IR code live)            |
-| `s`            | Save selected buffer item to session (prompts for name) |
-| `n`            | Rename selected session command                         |
-| `d`            | Delete selected item                                    |
-| `C`            | Clear all items from the buffer                         |
-| `l`            | Send learn-mode command to device                       |
-| `L`            | Toggle lock mode (see below)                            |
-| `q` / `Ctrl+C` | Quit                                                    |
+| Key            | Action                                                              |
+|----------------|---------------------------------------------------------------------|
+| `↑` / `k`      | Move selection up                                                   |
+| `↓` / `j`      | Move selection down                                                 |
+| `Tab`          | Switch focus between Buffer and Session panes                       |
+| `r`            | Replay selected item (test the IR code live)                        |
+| `s`            | Save selected buffer item to session (opens name modal)             |
+| `n`            | Rename selected session command (opens name modal)                  |
+| `d`            | Delete selected item                                                |
+| `C`            | Clear all items from the buffer                                     |
+| `l`            | Send learn-mode command to device                                   |
+| `L`            | Toggle lock mode (see below)                                        |
+| `y`            | Copy selected item's raw base64 payload to clipboard                |
+| `Y`            | Copy selected item as a JSON send-command to clipboard              |
+| `q` / `Ctrl+C` | Quit                                                                |
 
 ### Step-by-step: Learning a button
 
@@ -170,7 +171,7 @@ irlearn ui --login                   # prompt for MQTT credentials before connec
 3. Point your remote at the IR blaster and press the button you want to capture
 4. The IR code appears in the **Buffer** pane
 5. With the code selected, press `s`
-6. Type a name (e.g. `power`) at the `:` prompt and press `Enter`
+6. A modal appears — type a name (e.g. `power`) and press `Enter`
 7. The command appears in the **Session** pane and is written to the session file immediately
 
 ### Step-by-step: Replaying a command
