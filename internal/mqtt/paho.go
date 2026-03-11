@@ -15,9 +15,15 @@ type pahoClient struct {
 	logger   *slog.Logger
 	mu       sync.Mutex
 	handlers map[string]MessageHandler
+	statusCh chan<- bool
 }
 
 func newPahoClient(host string, port int, user, password string, logger *slog.Logger) *pahoClient {
+	p := &pahoClient{
+		logger:   logger,
+		handlers: make(map[string]MessageHandler),
+	}
+
 	opts := pahomqtt.NewClientOptions()
 	opts.AddBroker(fmt.Sprintf("tcp://%s:%d", host, port))
 	if user != "" {
@@ -31,16 +37,15 @@ func newPahoClient(host string, port int, user, password string, logger *slog.Lo
 	opts.SetAutoReconnect(true)
 	opts.SetConnectionLostHandler(func(_ pahomqtt.Client, err error) {
 		logger.Warn("MQTT connection lost", "error", err)
+		p.sendStatus(false)
 	})
 	opts.SetOnConnectHandler(func(_ pahomqtt.Client) {
 		logger.Info("MQTT connected")
+		p.sendStatus(true)
 	})
 
-	return &pahoClient{
-		opts:     opts,
-		logger:   logger,
-		handlers: make(map[string]MessageHandler),
-	}
+	p.opts = opts
+	return p
 }
 
 func (p *pahoClient) Connect() error {
@@ -87,4 +92,26 @@ func (p *pahoClient) IsConnected() bool {
 	p.mu.Lock()
 	defer p.mu.Unlock()
 	return p.client != nil && p.client.IsConnected()
+}
+
+// SetStatusChannel registers the channel to receive connection state changes.
+func (p *pahoClient) SetStatusChannel(ch chan<- bool) {
+	p.mu.Lock()
+	p.statusCh = ch
+	p.mu.Unlock()
+}
+
+// sendStatus forwards a connection status change to the registered channel.
+// The send is non-blocking to avoid stalling paho's internal goroutine.
+func (p *pahoClient) sendStatus(connected bool) {
+	p.mu.Lock()
+	ch := p.statusCh
+	p.mu.Unlock()
+	if ch == nil {
+		return
+	}
+	select {
+	case ch <- connected:
+	default:
+	}
 }

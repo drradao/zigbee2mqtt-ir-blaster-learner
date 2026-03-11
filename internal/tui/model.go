@@ -30,7 +30,10 @@ type Model struct {
 	sess        *session.Session
 	// mqttCh is written to by the MQTT message handler goroutine and read by
 	// the bubbletea waitForMQTT command to deliver messages into the event loop.
-	mqttCh      chan buffer.IRMessage
+	mqttCh chan buffer.IRMessage
+	// statusCh is written to by the paho status callbacks (true=connected,
+	// false=lost) and read by waitForStatus to update the status bar.
+	statusCh    <-chan bool
 	logger      *slog.Logger
 	sessionFile string
 
@@ -57,6 +60,7 @@ type ModelParams struct {
 	Logger      *slog.Logger
 	SessionFile string
 	MQTTCh      chan buffer.IRMessage
+	StatusCh    <-chan bool
 }
 
 // NewModel constructs the root model and loads the session from disk.
@@ -73,6 +77,8 @@ func NewModel(p ModelParams) *Model {
 		sessionRepo: p.SessionRepo,
 		sess:        sess,
 		mqttCh:      p.MQTTCh,
+		statusCh:    p.StatusCh,
+		connected:   p.MQTTClient.IsConnected(),
 		logger:      p.Logger,
 		sessionFile: p.SessionFile,
 		bufferPane:  panes.NewBufferPane(),
@@ -85,9 +91,9 @@ func NewModel(p ModelParams) *Model {
 	return m
 }
 
-// Init starts the MQTT listener command.
+// Init starts the MQTT listener and status watcher commands.
 func (m *Model) Init() tea.Cmd {
-	return waitForMQTT(m.mqttCh)
+	return tea.Batch(waitForMQTT(m.mqttCh), waitForStatus(m.statusCh))
 }
 
 // waitForMQTT blocks until a message arrives on the channel, then returns it
@@ -95,6 +101,13 @@ func (m *Model) Init() tea.Cmd {
 func waitForMQTT(ch chan buffer.IRMessage) tea.Cmd {
 	return func() tea.Msg {
 		return MQTTMessageReceived{Msg: <-ch}
+	}
+}
+
+// waitForStatus blocks until a connection status change arrives on the channel.
+func waitForStatus(ch <-chan bool) tea.Cmd {
+	return func() tea.Msg {
+		return StatusChanged{Connected: <-ch}
 	}
 }
 

@@ -1,7 +1,6 @@
 package tui
 
 import (
-	"encoding/base64"
 	"time"
 
 	tea "github.com/charmbracelet/bubbletea"
@@ -51,7 +50,7 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 	case StatusChanged:
 		m.connected = msg.Connected
-		return m, nil
+		return m, waitForStatus(m.statusCh)
 
 	case tea.KeyMsg:
 		return m.handleKey(msg)
@@ -118,7 +117,7 @@ func (m *Model) handlePromptSubmit(val string) tea.Cmd {
 	case "save":
 		sel := m.bufferPane.Selected()
 		if sel != nil && val != "" {
-			b64 := base64.StdEncoding.EncodeToString(sel.Payload)
+			b64 := string(sel.Payload)
 			cmd := session.Command{
 				Name:       val,
 				Payload:    b64,
@@ -146,7 +145,7 @@ func (m *Model) replaySelected() tea.Cmd {
 	if m.active == paneBuffer {
 		sel := m.bufferPane.Selected()
 		if sel != nil {
-			b64 := base64.StdEncoding.EncodeToString(sel.Payload)
+			b64 := string(sel.Payload)
 			_ = m.replaySvc.Replay(b64)
 		}
 	} else {
@@ -179,7 +178,7 @@ func (m *Model) updatePreview() {
 		sel := m.bufferPane.Selected()
 		if sel != nil {
 			m.previewPane.SetName("")
-			m.previewPane.SetPayload(base64.StdEncoding.EncodeToString(sel.Payload))
+			m.previewPane.SetPayload(string(sel.Payload))
 		} else {
 			m.previewPane.SetName("")
 			m.previewPane.SetPayload("")

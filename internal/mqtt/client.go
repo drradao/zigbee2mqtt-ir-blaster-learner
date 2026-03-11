@@ -19,4 +19,7 @@ type MQTTClient interface {
 	Publish(topic string, payload []byte) error
 	// IsConnected reports whether the underlying connection is live.
 	IsConnected() bool
+	// SetStatusChannel registers a channel that receives true on connect and
+	// false on connection loss. The send is non-blocking; use a buffered channel.
+	SetStatusChannel(ch chan<- bool)
 }

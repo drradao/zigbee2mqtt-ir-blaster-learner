@@ -32,6 +32,9 @@ func runUI(cmd *cobra.Command, _ []string) error {
 	// mqttCh bridges the MQTT subscriber goroutine and the bubbletea event
 	// loop. A buffer of 32 avoids blocking the subscriber on bursts.
 	mqttCh := make(chan buffer.IRMessage, 32)
+	// statusCh carries connection state changes (true=connected, false=lost)
+	// from the paho callbacks into the bubbletea event loop.
+	statusCh := make(chan bool, 4)
 	buf := buffer.New()
 
 	var (
@@ -59,6 +62,9 @@ func runUI(cmd *cobra.Command, _ []string) error {
 	listenTopic := mqtt.ListenTopic(cfg.Device)
 	publishTopic := mqtt.PublishTopic(cfg.Device)
 
+	// Bridge paho connection state changes into the TUI status channel.
+	mqttClient.SetStatusChannel(statusCh)
+
 	// Subscribe forwards filtered MQTT messages into the channel consumed by the TUI.
 	if err := mqttClient.Subscribe(listenTopic, buildMQTTHandler(buf, mqttCh, logger)); err != nil {
 		stopFX(app)
@@ -82,6 +88,7 @@ func runUI(cmd *cobra.Command, _ []string) error {
 		Logger:      logger,
 		SessionFile: sessionFile,
 		MQTTCh:      mqttCh,
+		StatusCh:    statusCh,
 	})
 
 	program := tea.NewProgram(model, tea.WithAltScreen())
