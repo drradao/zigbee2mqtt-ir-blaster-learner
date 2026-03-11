@@ -82,9 +82,30 @@ file; unset flags leave the file value intact.
 
 ## First Run
 
-If the config file is absent or any required field is missing, `irlearn` starts with an
-in-app form that prompts for the missing values before attempting to connect. Fill in each
-field and confirm to proceed.
+If the config file is absent or any required field (`host`, `device`) is missing, `irlearn`
+automatically shows an interactive setup form before attempting to connect.
+
+Fill in the required fields and press `Tab` or `Enter` to move between them. When all fields
+are complete you are asked `Save to config? [y/N]`. Press `y` to write the values to the
+config file; press `n` or `Enter` to proceed without saving (useful when you prefer to set
+values via CLI flags each time).
+
+Press `Esc` at any point to abort.
+
+---
+
+## The `config` Command
+
+Opens the full configuration form, even when all fields are already set. Use this to review
+or change any setting interactively.
+
+```bash
+irlearn config
+irlearn config --config /path/to/other.yaml   # edit a specific config file
+```
+
+Fields are pre-populated with the current config values. Navigate with `Tab`/`Shift+Tab` and
+confirm with `Enter`. You are asked whether to save on exit.
 
 ---
 
@@ -96,6 +117,7 @@ The interactive TUI is the primary interface.
 irlearn ui
 irlearn ui --session my-tv.yaml      # load a specific session file
 irlearn ui --device bedroom_ir       # override device for this session
+irlearn ui --login                   # prompt for MQTT credentials before connecting
 ```
 
 ### Layout
@@ -177,12 +199,18 @@ irlearn capture [flags]
 
 ### Flags
 
-| Flag          | Default | Description                                     |
-|---------------|---------|-------------------------------------------------|
-| `--timeout N` | `30`    | Seconds to wait for an IR code before giving up |
-| `--verbose`   | false   | Print progress messages to stderr               |
+| Flag          | Default | Description                                                   |
+|---------------|---------|---------------------------------------------------------------|
+| `--timeout N` | `30`    | Seconds to wait for an IR code before giving up               |
+| `--verbose`   | false   | Print progress messages to stderr                             |
+| `--login`     | false   | Prompt for MQTT credentials via stdin before connecting       |
 
 All global flags (`--device`, `--mqtt-host`, etc.) also apply.
+
+> **Note on `--login`:** `capture --login` prompts for username and password on the terminal
+> before connecting. The input is not echo-suppressed (the password is visible). If you need
+> hidden password entry, set `mqtt.password` in your config file or use the `--mqtt-password`
+> flag instead.
 
 ### Exit codes
 

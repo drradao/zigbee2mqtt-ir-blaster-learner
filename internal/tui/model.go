@@ -41,6 +41,7 @@ type Model struct {
 	sessionPane *panes.SessionPane
 	previewPane *panes.PreviewPane
 	prompt      Prompt
+	loginModal  loginModal
 
 	active        activePane
 	connected     bool
@@ -61,6 +62,11 @@ type ModelParams struct {
 	SessionFile string
 	MQTTCh      chan buffer.IRMessage
 	StatusCh    <-chan bool
+	// LoginMode, when true, opens the credentials modal immediately on start.
+	// Pre-flight (cmd/preflight.go) handles the actual credential injection
+	// before MQTT connects; the modal here is a forward-compatible hook for
+	// future mid-session credential re-entry.
+	LoginMode bool
 }
 
 // NewModel constructs the root model and loads the session from disk.
@@ -85,9 +91,13 @@ func NewModel(p ModelParams) *Model {
 		sessionPane: panes.NewSessionPane(p.SessionFile),
 		previewPane: panes.NewPreviewPane(),
 		active:      paneBuffer,
+		loginModal:  newLoginModal(),
 	}
 	m.bufferPane.SetActive(true)
 	m.sessionPane.SetSession(sess)
+	if p.LoginMode {
+		m.loginModal.Open()
+	}
 	return m
 }
 

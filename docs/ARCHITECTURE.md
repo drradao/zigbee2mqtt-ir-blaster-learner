@@ -26,6 +26,8 @@ Developer guide to the internals of `irlearn`.
 ├── main.go                         Entry point; calls cmd.Execute()
 ├── cmd/                            Cobra commands (transport layer)
 │   ├── root.go                     Persistent flags, logger setup, FX wiring helpers
+│   ├── preflight.go                Shared pre-flight helper (config load + setup form)
+│   ├── config.go                   `irlearn config` — interactive config editor
 │   ├── capture.go                  `irlearn capture` — headless single-shot capture
 │   └── ui.go                       `irlearn ui` — launches bubbletea TUI
 │
@@ -33,8 +35,8 @@ Developer guide to the internals of `irlearn`.
     ├── flags/                      FlagValues value object
     │   └── flags.go                Shared type used by cmd and config (avoids circular import)
     ├── config/                     Config struct, YAML loader, flag override logic, FX module
-    │   ├── config.go
-    │   ├── loader.go
+    │   ├── config.go               Load (port default 1883) + Save (atomic write)
+    │   ├── loader.go               ApplyFlagOverrides (exported)
     │   └── module.go
     ├── mqtt/                       MQTTClient interface, paho implementation, topic helpers, FX module
     │   ├── client.go               Interface + MessageHandler type
@@ -55,11 +57,16 @@ Developer guide to the internals of `irlearn`.
         ├── model.go
         ├── update.go
         ├── view.go
-        ├── messages.go
-        ├── prompt.go
+        ├── messages.go             MQTTMessageReceived, StatusChanged, LoginSubmitted, LoginDismissed
+        ├── prompt.go               Vim-style prompt (supports Masked for passwords)
+        ├── login_modal.go          Inline credentials overlay (forward hook for reconnect)
         ├── styles.go               (thin shim, imports tui/styles)
         ├── styles/                 Shared lipgloss styles — own leaf package
         │   └── styles.go           (avoids tui ↔ panes circular import)
+        ├── setup/                  Standalone setup form — leaf package, no tui import
+        │   ├── field.go            Field input widget
+        │   ├── model.go            Form model (ModeMissing / ModeFull / ModeLogin)
+        │   └── run.go              Run() entry point
         └── panes/                  Individual pane renderers
             ├── buffer_pane.go
             ├── session_pane.go
@@ -135,9 +142,40 @@ graph LR
 ## Config Loading Order
 
 1. Resolve config file path: `--config` flag → default `~/.config/mqttirlearn/config.yaml`
-2. Parse YAML into `config.Config` (missing file is not an error — yields zero struct)
+2. Parse YAML into `config.Config` (missing file is not an error — yields struct with Port=1883)
 3. Apply flag overrides: only flags that were explicitly set on the command line win
    (tracked via `cobra.Command.Flags().Visit`)
+4. **Pre-flight check**: if `host` or `device` is empty, show the setup form before connecting
+5. Supply the resolved `*config.Config` directly to FX (`fx.Supply`) instead of `config.Module`,
+   so form-collected values are not discarded by a second load
+
+## UI Startup Flow (with pre-flight)
+
+```mermaid
+sequenceDiagram
+    participant Cobra
+    participant Preflight
+    participant Setup as Setup Form (bubbletea)
+    participant FX
+    participant MQTT
+    participant BT as bubbletea TUI
+
+    Cobra->>Preflight: runPreFlight(fv)
+    Preflight->>Preflight: Load config + ApplyFlagOverrides
+    alt host or device missing
+        Preflight->>Setup: setup.Run(ModeMissing)
+        Setup-->>Preflight: Result{Config, Saved}
+        Preflight->>Preflight: merge result into cfg
+    end
+    opt --login flag
+        Preflight->>Setup: setup.Run(ModeLogin)
+        Setup-->>Preflight: Result{Config} (no save)
+        Preflight->>Preflight: apply User+Password to cfg
+    end
+    Cobra->>FX: fx.New(fx.Supply(cfg), MQTTModule, SessionModule)
+    FX->>MQTT: connect to broker
+    Cobra->>BT: tea.NewProgram(model).Run()
+```
 
 ---
 

@@ -12,6 +12,11 @@ func (m *Model) View() string {
 		return "Loading…"
 	}
 
+	// Login modal takes over the full screen when active.
+	if m.loginModal.IsActive() {
+		return m.loginModal.View(m.width, m.height)
+	}
+
 	left := lipgloss.JoinVertical(lipgloss.Left,
 		m.bufferPane.View(),
 		m.sessionPane.View(),

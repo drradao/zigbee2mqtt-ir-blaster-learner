@@ -83,6 +83,37 @@ Only the `learned_ir_code` key is processed; all other fields are ignored.
 
 ---
 
+## Setup & Login Flow
+
+### First-run setup form
+
+When `host` or `device` is missing from the config, a full-screen setup form appears before
+the TUI starts. Only the missing fields are shown. After filling them in you can optionally
+save the values to the config file.
+
+```mermaid
+flowchart LR
+    A[irlearn ui / capture] --> B{host or device empty?}
+    B -- yes --> C[Setup form — missing fields only]
+    C --> D{Save?}
+    D -- y --> E[Write config file]
+    D -- n --> F[Proceed without saving]
+    E --> G[Connect & run]
+    F --> G
+    B -- no --> G
+```
+
+### `irlearn config`
+
+Opens the full configuration form at any time to review or update all five settings
+(host, port, device, user, password).
+
+### `--login` flag
+
+- **`irlearn ui --login`**: shows a credentials-only form (User + Password) before the TUI
+  starts. Values are not saved to disk.
+- **`irlearn capture --login`**: prompts for credentials via stdin before connecting.
+
 ## Out of Scope (v1)
 
 - IR protocol decoding (NEC, RC5, etc.)

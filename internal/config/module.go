@@ -20,6 +20,6 @@ func newConfig(fv flags.FlagValues) (*Config, error) {
 	if err != nil {
 		return nil, err
 	}
-	applyFlagOverrides(cfg, fv)
+	ApplyFlagOverrides(cfg, fv)
 	return cfg, nil
 }

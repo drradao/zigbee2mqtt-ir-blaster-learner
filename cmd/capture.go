@@ -11,13 +11,13 @@ import (
 	"github.com/spf13/cobra"
 	"go.uber.org/fx"
 
-	"github.com/dadao/zigbee2mqtt-ir-blaster-learner/internal/config"
 	"github.com/dadao/zigbee2mqtt-ir-blaster-learner/internal/flags"
 	"github.com/dadao/zigbee2mqtt-ir-blaster-learner/internal/mqtt"
 )
 
 var captureTimeout int
 var captureVerbose bool
+var captureLogin bool
 
 var captureCmd = &cobra.Command{
 	Use:   "capture",
@@ -28,25 +28,34 @@ var captureCmd = &cobra.Command{
 func init() {
 	captureCmd.Flags().IntVar(&captureTimeout, "timeout", 30, "seconds to wait for an IR code")
 	captureCmd.Flags().BoolVar(&captureVerbose, "verbose", false, "print progress messages to stderr")
+	captureCmd.Flags().BoolVar(&captureLogin, "login", false, "prompt for MQTT credentials via stdin before connecting (not saved to config)")
 }
 
 func runCapture(cmd *cobra.Command, _ []string) error {
 	fv := buildFlagValues(cmd)
 	logger := newLogger(fv.LogFile)
 
+	cfg, _, err := runPreFlight(fv)
+	if err != nil {
+		return err
+	}
+
+	if captureLogin {
+		headlessLoginPrompt(cfg)
+	}
+
 	resultCh := make(chan string, 1)
 
-	var (
-		mqttClient mqtt.MQTTClient
-		cfg        *config.Config
-	)
+	var mqttClient mqtt.MQTTClient
 
+	// Supply the pre-flight resolved config directly instead of config.Module,
+	// so that any credentials collected via --login are applied.
 	app := fx.New(
 		fx.Supply(fv),
 		fx.Supply(logger),
-		config.Module,
+		fx.Supply(cfg),
 		mqtt.Module,
-		fx.Populate(&mqttClient, &cfg),
+		fx.Populate(&mqttClient),
 		fx.NopLogger,
 	)
 

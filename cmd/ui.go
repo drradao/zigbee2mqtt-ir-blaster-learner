@@ -11,13 +11,13 @@ import (
 	"go.uber.org/fx"
 
 	"github.com/dadao/zigbee2mqtt-ir-blaster-learner/internal/buffer"
-	"github.com/dadao/zigbee2mqtt-ir-blaster-learner/internal/config"
-	"github.com/dadao/zigbee2mqtt-ir-blaster-learner/internal/flags"
 	"github.com/dadao/zigbee2mqtt-ir-blaster-learner/internal/mqtt"
 	"github.com/dadao/zigbee2mqtt-ir-blaster-learner/internal/service"
 	"github.com/dadao/zigbee2mqtt-ir-blaster-learner/internal/session"
 	"github.com/dadao/zigbee2mqtt-ir-blaster-learner/internal/tui"
 )
+
+var uiLogin bool
 
 var uiCmd = &cobra.Command{
 	Use:   "ui",
@@ -25,9 +25,24 @@ var uiCmd = &cobra.Command{
 	RunE:  runUI,
 }
 
+func init() {
+	uiCmd.Flags().BoolVar(&uiLogin, "login", false, "collect MQTT credentials before connecting (not saved to config)")
+}
+
 func runUI(cmd *cobra.Command, _ []string) error {
 	fv := buildFlagValues(cmd)
 	logger := newLogger(fv.LogFile)
+
+	cfg, cfgPath, err := runPreFlight(fv)
+	if err != nil {
+		return err
+	}
+
+	if uiLogin {
+		if err := runLoginPreflight(cfg, cfgPath); err != nil {
+			return err
+		}
+	}
 
 	// mqttCh bridges the MQTT subscriber goroutine and the bubbletea event
 	// loop. A buffer of 32 avoids blocking the subscriber on bursts.
@@ -39,17 +54,18 @@ func runUI(cmd *cobra.Command, _ []string) error {
 
 	var (
 		mqttClient  mqtt.MQTTClient
-		cfg         *config.Config
 		sessionRepo session.SessionRepository
 	)
 
+	// Supply the pre-flight resolved config directly instead of config.Module,
+	// so that any credentials or values collected by the setup form are applied.
 	app := fx.New(
 		fx.Supply(fv),
 		fx.Supply(logger),
-		config.Module,
+		fx.Supply(cfg),
 		mqtt.Module,
 		session.Module,
-		fx.Populate(&mqttClient, &cfg, &sessionRepo),
+		fx.Populate(&mqttClient, &sessionRepo),
 		fx.NopLogger,
 	)
 
@@ -123,6 +139,3 @@ func buildMQTTHandler(buf *buffer.IRBuffer, ch chan buffer.IRMessage, logger *sl
 		}
 	}
 }
-
-// Ensure flags import is used.
-var _ flags.FlagValues

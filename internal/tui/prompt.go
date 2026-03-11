@@ -1,6 +1,10 @@
 package tui
 
-import tea "github.com/charmbracelet/bubbletea"
+import (
+	"strings"
+
+	tea "github.com/charmbracelet/bubbletea"
+)
 
 // Prompt is a vim-style single-line text input shown at the bottom of the
 // screen when the user needs to enter a name (e.g. when saving a command).
@@ -8,6 +12,8 @@ type Prompt struct {
 	active bool
 	value  string
 	cursor int
+	// Masked hides the input value with bullet characters (e.g. for passwords).
+	Masked bool
 }
 
 // Active reports whether the prompt is currently visible.
@@ -50,18 +56,23 @@ func (p *Prompt) Update(msg tea.Msg) (submit bool, cancel bool) {
 			p.cursor--
 		}
 	case tea.KeyLeft:
-		if p.cursor > 0 {
+		if !p.Masked && p.cursor > 0 {
 			p.cursor--
 		}
 	case tea.KeyRight:
-		if p.cursor < len([]rune(p.value)) {
+		if !p.Masked && p.cursor < len([]rune(p.value)) {
 			p.cursor++
 		}
 	case tea.KeyRunes:
-		runes := []rune(p.value)
-		runes = append(runes[:p.cursor], append(km.Runes, runes[p.cursor:]...)...)
-		p.value = string(runes)
-		p.cursor += len(km.Runes)
+		if p.Masked {
+			p.value += string(km.Runes)
+			p.cursor = len([]rune(p.value))
+		} else {
+			runes := []rune(p.value)
+			runes = append(runes[:p.cursor], append(km.Runes, runes[p.cursor:]...)...)
+			p.value = string(runes)
+			p.cursor += len(km.Runes)
+		}
 	}
 	return false, false
 }
@@ -70,6 +81,10 @@ func (p *Prompt) Update(msg tea.Msg) (submit bool, cancel bool) {
 func (p *Prompt) View() string {
 	if !p.active {
 		return ""
+	}
+	if p.Masked {
+		dots := strings.Repeat("•", len([]rune(p.value)))
+		return StylePrompt.Render(":") + " " + dots + "█"
 	}
 	runes := []rune(p.value)
 	before := string(runes[:p.cursor])

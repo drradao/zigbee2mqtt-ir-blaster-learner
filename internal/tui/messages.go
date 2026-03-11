@@ -14,3 +14,9 @@ type StatusChanged struct {
 	Connected bool
 	Text      string
 }
+
+// LoginSubmitted is dispatched when the login modal collects credentials.
+type LoginSubmitted struct{ User, Password string }
+
+// LoginDismissed is dispatched when the login modal is closed without submitting.
+type LoginDismissed struct{}

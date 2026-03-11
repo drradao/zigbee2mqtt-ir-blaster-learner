@@ -2,9 +2,9 @@ package config
 
 import "github.com/dadao/zigbee2mqtt-ir-blaster-learner/internal/flags"
 
-// applyFlagOverrides copies flag values into cfg only for flags the user
+// ApplyFlagOverrides copies flag values into cfg only for flags the user
 // explicitly set on the command line.
-func applyFlagOverrides(cfg *Config, fv flags.FlagValues) {
+func ApplyFlagOverrides(cfg *Config, fv flags.FlagValues) {
 	if fv.Changed["mqtt-host"] {
 		cfg.MQTT.Host = fv.MQTTHost
 	}

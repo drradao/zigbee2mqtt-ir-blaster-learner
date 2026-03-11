@@ -14,6 +14,20 @@ const lockDebounce = 200 * time.Millisecond
 
 // Update is the bubbletea update function.
 func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+	// Login modal captures all key events when active.
+	if m.loginModal.IsActive() {
+		if km, ok := msg.(tea.KeyMsg); ok {
+			submitted, dismissed, user, pass := m.loginModal.Update(km)
+			if submitted {
+				return m, func() tea.Msg { return LoginSubmitted{User: user, Password: pass} }
+			}
+			if dismissed {
+				return m, func() tea.Msg { return LoginDismissed{} }
+			}
+			return m, nil
+		}
+	}
+
 	// Route key events to the prompt when it is active.
 	if m.prompt.Active() {
 		if _, ok := msg.(tea.KeyMsg); ok {
@@ -51,6 +65,16 @@ func (m *Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case StatusChanged:
 		m.connected = msg.Connected
 		return m, waitForStatus(m.statusCh)
+
+	case LoginSubmitted:
+		// Credentials collected from the modal — modal is already closed.
+		// The in-TUI modal is a forward hook; credentials from pre-flight
+		// are already applied to the active MQTT connection.
+		return m, nil
+
+	case LoginDismissed:
+		// Modal dismissed without submitting.
+		return m, nil
 
 	case tea.KeyMsg:
 		return m.handleKey(msg)
