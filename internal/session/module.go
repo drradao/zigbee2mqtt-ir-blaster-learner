@@ -11,10 +11,14 @@ var Module = fx.Module("session",
 	fx.Provide(newSessionRepository),
 )
 
-func newSessionRepository(cfg *config.Config) SessionRepository {
+func newSessionRepository(cfg *config.Config) (SessionRepository, error) {
 	path := cfg.Session
 	if path == "" {
-		path = "session.yaml"
+		var err error
+		path, err = config.DefaultSessionPath()
+		if err != nil {
+			return nil, err
+		}
 	}
-	return newYAMLRepository(path)
+	return newYAMLRepository(path), nil
 }

@@ -7,7 +7,6 @@ import (
 	"github.com/atotto/clipboard"
 	tea "github.com/charmbracelet/bubbletea"
 
-	"github.com/dadao/zigbee2mqtt-ir-blaster-learner/internal/buffer"
 	"github.com/dadao/zigbee2mqtt-ir-blaster-learner/internal/session"
 )
 
@@ -136,7 +135,7 @@ func (m *Model) handleKey(msg tea.KeyMsg) (tea.Model, tea.Cmd) {
 		_ = m.learnSvc.SendLearnCommand()
 
 	case "L":
-		m.lockMode = m.learnSvc.ToggleLockMode()
+		m.lockMode = !m.lockMode
 
 	case "y":
 		m.yankPayload()
@@ -280,20 +279,4 @@ func (m *Model) layoutPanes() {
 	m.bufferPane.SetSize(leftW, bufH)
 	m.sessionPane.SetSize(leftW, sessH)
 	m.previewPane.SetSize(rightW, contentH)
-}
-
-func (m *Model) handleMQTTMessage(rawPayload []byte, topic string) {
-	code := extractLearnedCode(rawPayload)
-	if code == "" {
-		return
-	}
-	msg := buffer.IRMessage{
-		Payload: []byte(code),
-		Topic:   topic,
-	}
-	select {
-	case m.mqttCh <- msg:
-	default:
-		m.logger.Warn("mqtt channel full, dropping message")
-	}
 }

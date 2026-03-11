@@ -23,10 +23,17 @@ func runConfig(cmd *cobra.Command, _ []string) error {
 	fv := buildFlagValues(cmd)
 	path := fv.ConfigPath
 	if path == "" {
-		path = config.DefaultConfigPath()
+		var err error
+		path, err = config.DefaultConfigPath()
+		if err != nil {
+			return fmt.Errorf("resolving config path: %w", err)
+		}
 	}
 
-	existing, _ := config.Load(path)
+	existing, err := config.Load(path)
+	if err != nil {
+		return fmt.Errorf("loading config: %w", err)
+	}
 	if existing == nil {
 		existing = &config.Config{}
 	}

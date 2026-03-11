@@ -8,8 +8,7 @@ import (
 )
 
 type yamlRepository struct {
-	path  string
-	dirty bool
+	path string
 }
 
 func newYAMLRepository(path string) *yamlRepository {
@@ -60,16 +59,5 @@ func (r *yamlRepository) Save(s *Session) error {
 		os.Remove(tmpName)
 		return err
 	}
-	r.dirty = false
 	return nil
-}
-
-// IsDirty reports whether in-memory state has diverged from the saved file.
-func (r *yamlRepository) IsDirty() bool {
-	return r.dirty
-}
-
-// MarkDirty marks the repository as having unsaved changes.
-func (r *yamlRepository) MarkDirty() {
-	r.dirty = true
 }

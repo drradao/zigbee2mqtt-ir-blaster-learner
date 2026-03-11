@@ -1,7 +1,6 @@
 package tui
 
 import (
-	"encoding/json"
 	"log/slog"
 
 	tea "github.com/charmbracelet/bubbletea"
@@ -107,32 +106,25 @@ func (m *Model) Init() tea.Cmd {
 
 // waitForMQTT blocks until a message arrives on the channel, then returns it
 // as a bubbletea message so it lands in the Update loop on the main goroutine.
+// Returns nil if the channel is closed.
 func waitForMQTT(ch chan buffer.IRMessage) tea.Cmd {
 	return func() tea.Msg {
-		return MQTTMessageReceived{Msg: <-ch}
+		msg, ok := <-ch
+		if !ok {
+			return nil
+		}
+		return MQTTMessageReceived{Msg: msg}
 	}
 }
 
 // waitForStatus blocks until a connection status change arrives on the channel.
+// Returns nil if the channel is closed.
 func waitForStatus(ch <-chan bool) tea.Cmd {
 	return func() tea.Msg {
-		return StatusChanged{Connected: <-ch}
+		connected, ok := <-ch
+		if !ok {
+			return nil
+		}
+		return StatusChanged{Connected: connected}
 	}
-}
-
-// extractLearnedCode pulls the learned_ir_code string from a raw MQTT payload.
-func extractLearnedCode(payload []byte) string {
-	var m map[string]interface{}
-	if err := json.Unmarshal(payload, &m); err != nil {
-		return ""
-	}
-	v, ok := m["learned_ir_code"]
-	if !ok {
-		return ""
-	}
-	s, ok := v.(string)
-	if !ok {
-		return ""
-	}
-	return s
 }

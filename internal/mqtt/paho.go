@@ -1,6 +1,7 @@
 package mqtt
 
 import (
+	"errors"
 	"fmt"
 	"log/slog"
 	"sync"
@@ -8,6 +9,9 @@ import (
 
 	pahomqtt "github.com/eclipse/paho.mqtt.golang"
 )
+
+// mqttOpTimeout is the maximum time to wait for MQTT operations to complete.
+const mqttOpTimeout = 10 * time.Second
 
 type pahoClient struct {
 	opts     *pahomqtt.ClientOptions
@@ -53,7 +57,9 @@ func (p *pahoClient) Connect() error {
 	defer p.mu.Unlock()
 	p.client = pahomqtt.NewClient(p.opts)
 	token := p.client.Connect()
-	token.Wait()
+	if !token.WaitTimeout(mqttOpTimeout) {
+		return errors.New("MQTT connect timed out")
+	}
 	return token.Error()
 }
 
@@ -78,13 +84,17 @@ func (p *pahoClient) Subscribe(topic string, handler MessageHandler) error {
 			h(msg.Topic(), msg.Payload())
 		}
 	})
-	token.Wait()
+	if !token.WaitTimeout(mqttOpTimeout) {
+		return errors.New("MQTT subscribe timed out")
+	}
 	return token.Error()
 }
 
 func (p *pahoClient) Publish(topic string, payload []byte) error {
 	token := p.client.Publish(topic, 1, false, payload)
-	token.Wait()
+	if !token.WaitTimeout(mqttOpTimeout) {
+		return errors.New("MQTT publish timed out")
+	}
 	return token.Error()
 }
 

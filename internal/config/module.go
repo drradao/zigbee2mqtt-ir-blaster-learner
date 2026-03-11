@@ -14,7 +14,11 @@ var Module = fx.Module("config",
 func newConfig(fv flags.FlagValues) (*Config, error) {
 	path := fv.ConfigPath
 	if path == "" {
-		path = DefaultConfigPath()
+		var err error
+		path, err = DefaultConfigPath()
+		if err != nil {
+			return nil, err
+		}
 	}
 	cfg, err := Load(path)
 	if err != nil {

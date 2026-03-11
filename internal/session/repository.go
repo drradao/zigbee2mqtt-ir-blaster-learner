@@ -8,6 +8,4 @@ type SessionRepository interface {
 	Load() (*Session, error)
 	// Save writes session to storage atomically.
 	Save(session *Session) error
-	// IsDirty reports whether there are unsaved changes.
-	IsDirty() bool
 }

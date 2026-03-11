@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"errors"
 	"fmt"
 	"os"
 
@@ -9,14 +10,21 @@ import (
 	"github.com/dadao/zigbee2mqtt-ir-blaster-learner/internal/tui/setup"
 )
 
+// ErrSetupAborted is returned when the user cancels the setup or login form.
+var ErrSetupAborted = errors.New("setup cancelled by user")
+
 // runPreFlight loads config, applies flag overrides, and runs the setup form
 // if required fields (Host or Device) are empty.
 // Returns the resolved *config.Config and the active config path.
-// Calls os.Exit(1) if the user aborts the form.
+// Returns ErrSetupAborted if the user aborts the form.
 func runPreFlight(fv flags.FlagValues) (*config.Config, string, error) {
 	path := fv.ConfigPath
 	if path == "" {
-		path = config.DefaultConfigPath()
+		var err error
+		path, err = config.DefaultConfigPath()
+		if err != nil {
+			return nil, "", fmt.Errorf("resolving config path: %w", err)
+		}
 	}
 
 	cfg, err := config.Load(path)
@@ -31,8 +39,7 @@ func runPreFlight(fv flags.FlagValues) (*config.Config, string, error) {
 			return nil, "", fmt.Errorf("setup form: %w", err)
 		}
 		if result.Aborted {
-			fmt.Fprintln(os.Stderr, "Setup cancelled.")
-			os.Exit(1)
+			return nil, "", ErrSetupAborted
 		}
 		// Merge the form result back, preserving yaml:"-" fields.
 		merged := result.Config
@@ -52,8 +59,7 @@ func runLoginPreflight(cfg *config.Config, _ string) error {
 		return fmt.Errorf("login form: %w", err)
 	}
 	if result.Aborted {
-		fmt.Fprintln(os.Stderr, "Login cancelled.")
-		os.Exit(1)
+		return ErrSetupAborted
 	}
 	cfg.MQTT.User = result.Config.MQTT.User
 	cfg.MQTT.Password = result.Config.MQTT.Password

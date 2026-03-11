@@ -3,6 +3,7 @@ package cmd
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"log/slog"
 	"os"
@@ -37,6 +38,10 @@ func runCapture(cmd *cobra.Command, _ []string) error {
 
 	cfg, _, err := runPreFlight(fv)
 	if err != nil {
+		if errors.Is(err, ErrSetupAborted) {
+			fmt.Fprintln(os.Stderr, "Cancelled.")
+			os.Exit(1)
+		}
 		return err
 	}
 

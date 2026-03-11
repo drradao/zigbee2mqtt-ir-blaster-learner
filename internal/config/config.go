@@ -3,6 +3,7 @@
 package config
 
 import (
+	"fmt"
 	"os"
 	"path/filepath"
 
@@ -27,9 +28,22 @@ type Config struct {
 
 // DefaultConfigPath returns the default config file location:
 // ~/.config/mqttirlearn/config.yaml
-func DefaultConfigPath() string {
-	home, _ := os.UserHomeDir()
-	return home + "/.config/mqttirlearn/config.yaml"
+func DefaultConfigPath() (string, error) {
+	home, err := os.UserHomeDir()
+	if err != nil {
+		return "", fmt.Errorf("cannot determine home directory: %w", err)
+	}
+	return filepath.Join(home, ".config", "mqttirlearn", "config.yaml"), nil
+}
+
+// DefaultSessionPath returns the default session file location:
+// ~/.config/mqttirlearn/session.yaml
+func DefaultSessionPath() (string, error) {
+	home, err := os.UserHomeDir()
+	if err != nil {
+		return "", fmt.Errorf("cannot determine home directory: %w", err)
+	}
+	return filepath.Join(home, ".config", "mqttirlearn", "session.yaml"), nil
 }
 
 // Load reads a YAML config from path. A missing file is not an error — it

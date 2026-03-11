@@ -13,6 +13,5 @@ type Command struct {
 
 // Session groups commands for a single device.
 type Session struct {
-	Device   string    `yaml:"device"`
 	Commands []Command `yaml:"commands"`
 }

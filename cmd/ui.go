@@ -2,8 +2,10 @@ package cmd
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"log/slog"
+	"os"
 	"time"
 
 	tea "github.com/charmbracelet/bubbletea"
@@ -11,6 +13,7 @@ import (
 	"go.uber.org/fx"
 
 	"github.com/dadao/zigbee2mqtt-ir-blaster-learner/internal/buffer"
+	"github.com/dadao/zigbee2mqtt-ir-blaster-learner/internal/config"
 	"github.com/dadao/zigbee2mqtt-ir-blaster-learner/internal/mqtt"
 	"github.com/dadao/zigbee2mqtt-ir-blaster-learner/internal/service"
 	"github.com/dadao/zigbee2mqtt-ir-blaster-learner/internal/session"
@@ -35,11 +38,19 @@ func runUI(cmd *cobra.Command, _ []string) error {
 
 	cfg, cfgPath, err := runPreFlight(fv)
 	if err != nil {
+		if errors.Is(err, ErrSetupAborted) {
+			fmt.Fprintln(os.Stderr, "Cancelled.")
+			os.Exit(1)
+		}
 		return err
 	}
 
 	if uiLogin {
 		if err := runLoginPreflight(cfg, cfgPath); err != nil {
+			if errors.Is(err, ErrSetupAborted) {
+				fmt.Fprintln(os.Stderr, "Cancelled.")
+				os.Exit(1)
+			}
 			return err
 		}
 	}
@@ -92,7 +103,12 @@ func runUI(cmd *cobra.Command, _ []string) error {
 
 	sessionFile := cfg.Session
 	if sessionFile == "" {
-		sessionFile = "session.yaml"
+		var err error
+		sessionFile, err = config.DefaultSessionPath()
+		if err != nil {
+			stopFX(app)
+			return fmt.Errorf("resolving session path: %w", err)
+		}
 	}
 
 	model := tui.NewModel(tui.ModelParams{
@@ -114,6 +130,8 @@ func runUI(cmd *cobra.Command, _ []string) error {
 	}
 
 	stopFX(app)
+	close(mqttCh)
+	close(statusCh)
 	return nil
 }
 

@@ -39,18 +39,19 @@ func (p *PreviewPane) SetMeta(topic string, capturedAt time.Time) {
 	p.capturedAt = capturedAt
 }
 
-// wrapString splits s into lines of at most width characters.
+// wrapString splits s into lines of at most width runes.
 func wrapString(s string, width int) []string {
 	if width <= 0 || s == "" {
 		return []string{s}
 	}
+	runes := []rune(s)
 	var lines []string
-	for len(s) > width {
-		lines = append(lines, s[:width])
-		s = s[width:]
+	for len(runes) > width {
+		lines = append(lines, string(runes[:width]))
+		runes = runes[width:]
 	}
-	if s != "" {
-		lines = append(lines, s)
+	if len(runes) > 0 {
+		lines = append(lines, string(runes))
 	}
 	return lines
 }

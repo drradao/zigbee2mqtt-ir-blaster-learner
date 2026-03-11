@@ -2,6 +2,7 @@ package setup
 
 import (
 	"fmt"
+	"strconv"
 
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
@@ -165,7 +166,9 @@ func (m *Model) handleSaveKey(msg tea.KeyMsg) (tea.Model, tea.Cmd) {
 func (m *Model) assembleResult() {
 	port := 1883
 	if portStr := m.fields[idxPort].Value(); portStr != "" {
-		fmt.Sscanf(portStr, "%d", &port)
+		if p, err := strconv.Atoi(portStr); err == nil && p >= 1 && p <= 65535 {
+			port = p
+		}
 	}
 	m.result.Config = config.Config{
 		MQTT: config.MQTTConfig{
