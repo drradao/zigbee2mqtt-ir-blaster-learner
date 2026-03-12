@@ -12,7 +12,6 @@ type MQTTMessageReceived struct {
 // StatusChanged updates the MQTT connection status shown in the status bar.
 type StatusChanged struct {
 	Connected bool
-	Text      string
 }
 
 // LoginSubmitted is dispatched when the login modal collects credentials.

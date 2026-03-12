@@ -69,7 +69,9 @@ func (p *Prompt) Update(msg tea.Msg) (submit bool, cancel bool) {
 			p.cursor = len([]rune(p.value))
 		} else {
 			runes := []rune(p.value)
-			runes = append(runes[:p.cursor], append(km.Runes, runes[p.cursor:]...)...)
+			tail := make([]rune, len(runes)-p.cursor)
+			copy(tail, runes[p.cursor:])
+			runes = append(runes[:p.cursor], append(km.Runes, tail...)...)
 			p.value = string(runes)
 			p.cursor += len(km.Runes)
 		}

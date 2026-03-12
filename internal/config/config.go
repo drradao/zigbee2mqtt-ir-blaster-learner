@@ -3,7 +3,9 @@
 package config
 
 import (
+	"errors"
 	"fmt"
+	"io/fs"
 	"os"
 	"path/filepath"
 
@@ -52,7 +54,7 @@ func DefaultSessionPath() (string, error) {
 func Load(path string) (*Config, error) {
 	cfg := &Config{MQTT: MQTTConfig{Port: 1883}}
 	data, err := os.ReadFile(path)
-	if os.IsNotExist(err) {
+	if errors.Is(err, fs.ErrNotExist) {
 		return cfg, nil
 	}
 	if err != nil {

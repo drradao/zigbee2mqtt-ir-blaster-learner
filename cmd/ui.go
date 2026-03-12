@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"log/slog"
 	"os"
+	"sync/atomic"
 	"time"
 
 	tea "github.com/charmbracelet/bubbletea"
@@ -34,7 +35,8 @@ func init() {
 
 func runUI(cmd *cobra.Command, _ []string) error {
 	fv := buildFlagValues(cmd)
-	logger := newLogger(fv.LogFile)
+	logger, logCloser := newLogger(fv.LogFile)
+	defer logCloser.Close()
 
 	cfg, cfgPath, err := runPreFlight(fv)
 	if err != nil {
@@ -61,6 +63,11 @@ func runUI(cmd *cobra.Command, _ []string) error {
 	// statusCh carries connection state changes (true=connected, false=lost)
 	// from the paho callbacks into the bubbletea event loop.
 	statusCh := make(chan bool, 4)
+	// handlerStopped prevents the MQTT handler from sending on closed channels
+	// after teardown has begun.
+	var handlerStopped atomic.Bool
+	defer close(mqttCh)
+	defer close(statusCh)
 	buf := buffer.New()
 
 	var (
@@ -93,7 +100,8 @@ func runUI(cmd *cobra.Command, _ []string) error {
 	mqttClient.SetStatusChannel(statusCh)
 
 	// Subscribe forwards filtered MQTT messages into the channel consumed by the TUI.
-	if err := mqttClient.Subscribe(listenTopic, buildMQTTHandler(mqttCh, logger)); err != nil {
+	if err := mqttClient.Subscribe(listenTopic, buildMQTTHandler(&handlerStopped, mqttCh, logger)); err != nil {
+		handlerStopped.Store(true)
 		stopFX(app)
 		return fmt.Errorf("subscribe failed: %w", err)
 	}
@@ -125,23 +133,27 @@ func runUI(cmd *cobra.Command, _ []string) error {
 
 	program := tea.NewProgram(model, tea.WithAltScreen())
 	if _, err := program.Run(); err != nil {
+		handlerStopped.Store(true)
 		stopFX(app)
 		return fmt.Errorf("TUI error: %w", err)
 	}
 
+	handlerStopped.Store(true)
 	stopFX(app)
-	close(mqttCh)
-	close(statusCh)
 	return nil
 }
 
 // buildMQTTHandler returns an mqtt.MessageHandler that filters for
 // learned_ir_code payloads and forwards them to the bubbletea channel.
 // The TUI Update loop is the sole owner responsible for adding messages to the buffer.
-func buildMQTTHandler(ch chan buffer.IRMessage, logger *slog.Logger) mqtt.MessageHandler {
+// stopped must be set to true before the channel is closed to prevent send-on-closed-channel panics.
+func buildMQTTHandler(stopped *atomic.Bool, ch chan buffer.IRMessage, logger *slog.Logger) mqtt.MessageHandler {
 	return func(topic string, payload []byte) {
 		code := extractCode(payload, logger)
 		if code == "" {
+			return
+		}
+		if stopped.Load() {
 			return
 		}
 		msg := buffer.IRMessage{

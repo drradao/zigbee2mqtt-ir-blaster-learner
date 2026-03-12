@@ -74,9 +74,10 @@ func (p *pahoClient) Disconnect() {
 func (p *pahoClient) Subscribe(topic string, handler MessageHandler) error {
 	p.mu.Lock()
 	p.handlers[topic] = handler
+	client := p.client
 	p.mu.Unlock()
 
-	token := p.client.Subscribe(topic, 1, func(_ pahomqtt.Client, msg pahomqtt.Message) {
+	token := client.Subscribe(topic, 1, func(_ pahomqtt.Client, msg pahomqtt.Message) {
 		p.mu.Lock()
 		h, ok := p.handlers[msg.Topic()]
 		p.mu.Unlock()
@@ -91,7 +92,13 @@ func (p *pahoClient) Subscribe(topic string, handler MessageHandler) error {
 }
 
 func (p *pahoClient) Publish(topic string, payload []byte) error {
-	token := p.client.Publish(topic, 1, false, payload)
+	p.mu.Lock()
+	client := p.client
+	p.mu.Unlock()
+	if client == nil {
+		return errors.New("mqtt: not connected")
+	}
+	token := client.Publish(topic, 1, false, payload)
 	if !token.WaitTimeout(mqttOpTimeout) {
 		return errors.New("MQTT publish timed out")
 	}

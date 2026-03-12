@@ -1,6 +1,8 @@
 package setup
 
 import (
+	"errors"
+
 	tea "github.com/charmbracelet/bubbletea"
 
 	"github.com/dadao/zigbee2mqtt-ir-blaster-learner/internal/config"
@@ -13,5 +15,9 @@ func Run(existing config.Config, mode Mode, configPath string) (Result, error) {
 	if err != nil {
 		return Result{}, err
 	}
-	return final.(*Model).Result(), nil
+	m, ok := final.(*Model)
+	if !ok {
+		return Result{}, errors.New("setup: unexpected model type returned from program")
+	}
+	return m.Result(), nil
 }

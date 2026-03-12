@@ -184,7 +184,11 @@ func (m *Model) yankPayload() {
 func (m *Model) yankSendCommand() {
 	b64 := m.selectedPayload()
 	if b64 != "" {
-		js, _ := json.Marshal(map[string]string{"ir_code_to_send": b64})
+		js, err := json.Marshal(map[string]string{"ir_code_to_send": b64})
+		if err != nil {
+			m.logger.Error("failed to marshal yank payload", "error", err)
+			return
+		}
 		_ = clipboard.WriteAll(string(js))
 	}
 }

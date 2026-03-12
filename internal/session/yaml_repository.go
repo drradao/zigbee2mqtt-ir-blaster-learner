@@ -1,6 +1,8 @@
 package session
 
 import (
+	"errors"
+	"io/fs"
 	"os"
 	"path/filepath"
 
@@ -19,7 +21,7 @@ func newYAMLRepository(path string) *yamlRepository {
 func (r *yamlRepository) Load() (*Session, error) {
 	s := &Session{}
 	data, err := os.ReadFile(r.path)
-	if os.IsNotExist(err) {
+	if errors.Is(err, fs.ErrNotExist) {
 		return s, nil
 	}
 	if err != nil {

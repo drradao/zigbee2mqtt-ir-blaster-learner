@@ -73,7 +73,9 @@ func (f *Field) Update(msg tea.KeyMsg) (advance, retreat, cancel bool) {
 			f.cursor = utf8.RuneCountInString(f.value)
 		} else {
 			runes := []rune(f.value)
-			runes = append(runes[:f.cursor], append(msg.Runes, runes[f.cursor:]...)...)
+			tail := make([]rune, len(runes)-f.cursor)
+			copy(tail, runes[f.cursor:])
+			runes = append(runes[:f.cursor], append(msg.Runes, tail...)...)
 			f.value = string(runes)
 			f.cursor += len(msg.Runes)
 		}

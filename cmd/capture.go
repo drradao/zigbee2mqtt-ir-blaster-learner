@@ -12,7 +12,6 @@ import (
 	"github.com/spf13/cobra"
 	"go.uber.org/fx"
 
-	"github.com/dadao/zigbee2mqtt-ir-blaster-learner/internal/flags"
 	"github.com/dadao/zigbee2mqtt-ir-blaster-learner/internal/mqtt"
 )
 
@@ -34,7 +33,8 @@ func init() {
 
 func runCapture(cmd *cobra.Command, _ []string) error {
 	fv := buildFlagValues(cmd)
-	logger := newLogger(fv.LogFile)
+	logger, logCloser := newLogger(fv.LogFile)
+	defer logCloser.Close()
 
 	cfg, _, err := runPreFlight(fv)
 	if err != nil {
@@ -86,7 +86,11 @@ func runCapture(cmd *cobra.Command, _ []string) error {
 		return fmt.Errorf("subscribe failed: %w", err)
 	}
 
-	learnPayload, _ := json.Marshal(map[string]interface{}{"learn_ir_code": true})
+	learnPayload, err := json.Marshal(map[string]interface{}{"learn_ir_code": true})
+	if err != nil {
+		stopFX(app)
+		return fmt.Errorf("marshalling learn payload: %w", err)
+	}
 	if err := mqttClient.Publish(publishTopic, learnPayload); err != nil {
 		stopFX(app)
 		return fmt.Errorf("publish learn command failed: %w", err)
@@ -137,6 +141,3 @@ func stopFX(app *fx.App) {
 	defer cancel()
 	_ = app.Stop(stopCtx)
 }
-
-// Ensure flags import is used through the FlagValues type used in buildFlagValues.
-var _ flags.FlagValues

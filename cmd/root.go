@@ -5,6 +5,7 @@ package cmd
 
 import (
 	"fmt"
+	"io"
 	"log/slog"
 	"os"
 
@@ -60,14 +61,15 @@ func buildFlagValues(cmd *cobra.Command) flags.FlagValues {
 
 // newLogger builds an slog.Logger that writes to stderr (plain text, debug
 // level) or to a file (JSON, debug level) when --log is set.
-func newLogger(logFile string) *slog.Logger {
+// The returned io.Closer must be closed by the caller to flush buffered writes.
+func newLogger(logFile string) (*slog.Logger, io.Closer) {
 	if logFile == "" {
-		return slog.New(slog.NewTextHandler(os.Stderr, &slog.HandlerOptions{Level: slog.LevelDebug}))
+		return slog.New(slog.NewTextHandler(os.Stderr, &slog.HandlerOptions{Level: slog.LevelDebug})), io.NopCloser(nil)
 	}
 	f, err := os.OpenFile(logFile, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0o644)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "cannot open log file %s: %v\n", logFile, err)
-		return slog.New(slog.NewTextHandler(os.Stderr, nil))
+		return slog.New(slog.NewTextHandler(os.Stderr, nil)), io.NopCloser(nil)
 	}
-	return slog.New(slog.NewJSONHandler(f, &slog.HandlerOptions{Level: slog.LevelDebug}))
+	return slog.New(slog.NewJSONHandler(f, &slog.HandlerOptions{Level: slog.LevelDebug})), f
 }
