@@ -1,26 +1,16 @@
 # irlearn
 
-> Capture once. Replay forever.
+> A terminal-based IR code capture and replay tool for Zigbee2MQTT IR blasters.
 
-Point your IR blaster at any remote, press a button, and `irlearn` captures the code instantly.
 Organise commands into named sessions, replay them on demand, and script headless capture into your automation pipelines — all from the terminal.
 
-```
-┌─────────────────────────────┬──────────────────────┐
-│  Buffer                     │  Preview             │
-│  > msg 1  (42 bytes)        │  Name: —             │
-│    msg 2  (38 bytes)        │  Bytes: 42           │
-│    msg 3  (42 bytes)        │  Hex: 4A 2B 00 FF …  │
-├─────────────────────────────┤                      │
-│  Session: my-tv.yaml        │                      │
-│  > power                    │                      │
-│    volume_up                │                      │
-│    mute                     │                      │
-└─────────────────────────────┴──────────────────────┘
-│ MQTT: connected  buf:3                             │
-│ [r]eplay [s]ave [n]ame [d]elete [C]lear [l]earn … │
-└────────────────────────────────────────────────────┘
-```
+![screen shot](img/irlearn.png)
+
+## Disclaimer
+
+This project is not affiliated with or endorsed by the Zigbee2MQTT team. It is an independent tool built on top of the MQTT interface provided by Zigbee2MQTT-compatible IR blasters.
+
+This was made to scratch my own itch and is provided as-is. Most likely, it will go unmaintained since it was used just once to capture a few codes for my media devices. However, if you find it useful and want to contribute, feel free to open issues or submit pull requests.
 
 ## Quick Start
 
@@ -28,22 +18,13 @@ Organise commands into named sessions, replay them on demand, and script headles
 # Build
 go install github.com/dadao/zigbee2mqtt-ir-blaster-learner@latest
 
-# Create config (~/.config/mqttirlearn/config.yaml)
-mkdir -p ~/.config/mqttirlearn
-cat > ~/.config/mqttirlearn/config.yaml << EOF
-mqtt:
-  host: 192.168.1.100
-  port: 1883
-  user: ""
-  password: ""
-device: MY_IR_BLASTER
-EOF
-
-# Launch the TUI
+# Launch the TUI (pass --login if your MQTT broker requires authentication)
 irlearn ui
 ```
 
 All config values can also be passed as flags — run `irlearn --help` for the full list.
+
+**Note:** Configuration will be optionally saved to `~/.config/mqttirlearn/config.yaml` after the first run.
 
 ## Features
 

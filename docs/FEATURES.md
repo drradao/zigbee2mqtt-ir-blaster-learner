@@ -8,26 +8,11 @@ A terminal UI CLI tool for learning and replaying IR codes via a zigbee2mqtt-con
 
 ## TUI Layout
 
-```
-┌─────────────────────────────┬──────────────────────┐
-│  Buffer                     │  Preview             │
-│  > msg 1  (42 bytes)        │  Name: —             │
-│    msg 2  (38 bytes)        │  Bytes: 42           │
-│    msg 3  (42 bytes)        │  Hex: 4A 2B 00 FF …  │
-├─────────────────────────────┤                      │
-│  Session: my-tv.yaml        │                      │
-│  > power                    │                      │
-│    volume_up                │                      │
-│    mute                     │                      │
-└─────────────────────────────┴──────────────────────┘
-│ MQTT: connected  buf:3                             │
-│ [r]eplay [s]ave [n]ame [d]elete [C]lear [l]earn … │
-└────────────────────────────────────────────────────┘
-```
+![screen shot](../img/irlearn.png)
 
 - **Left top**: Buffer pane — live stream of received IR codes
 - **Left bottom**: Session commands pane — commands saved to the current session file
-- **Right**: Preview pane — byte length and hex preview of the selected item
+- **Right**: Preview pane — byte length and base64 preview of the selected item
 - **Bottom bar**: MQTT connection status + keyboard hint strip
 
 For keyboard shortcuts and a full operational guide, see [USAGE_MANUAL.md](USAGE_MANUAL.md).

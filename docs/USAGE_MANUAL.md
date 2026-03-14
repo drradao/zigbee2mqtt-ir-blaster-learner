@@ -122,28 +122,13 @@ irlearn ui --login                   # prompt for MQTT credentials before connec
 
 ### Layout
 
-```
-┌─────────────────────────────┬──────────────────────┐
-│  Buffer                     │  Preview             │
-│  > msg 1  (42 bytes)        │  Name: —             │
-│    msg 2  (38 bytes)        │  Bytes: 42           │
-│    msg 3  (42 bytes)        │  Hex: 4A 2B 00 FF …  │
-├─────────────────────────────┤                      │
-│  Session: my-tv.yaml        │                      │
-│  > power                    │                      │
-│    volume_up                │                      │
-│    mute                     │                      │
-└─────────────────────────────┴──────────────────────┘
-│ MQTT: connected  buf:3                             │
-│ [r]eplay [s]ave [n]ame [d]elete [C]lear [l]earn … │
-└────────────────────────────────────────────────────┘
-```
+![screen shot](../img/irlearn.png)
 
 | Pane                      | What it shows                                                       |
 |---------------------------|---------------------------------------------------------------------|
 | **Buffer** (top-left)     | Live stream of IR codes received from the device, most-recent first |
 | **Session** (bottom-left) | Commands saved to the current session file                          |
-| **Preview** (right)       | Decoded byte length and hex preview of the selected item            |
+| **Preview** (right)       | Decoded byte length and base64 preview of the selected item         |
 | **Status bar** (bottom)   | MQTT connection state and keyboard hint strip                       |
 
 ### Keyboard Shortcuts
