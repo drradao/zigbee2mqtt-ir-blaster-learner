@@ -29,23 +29,23 @@ type Config struct {
 }
 
 // DefaultConfigPath returns the default config file location:
-// ~/.config/mqttirlearn/config.yaml
+// ~/.config/zigbee2mqtt-ir-blaster-learner/config.yaml
 func DefaultConfigPath() (string, error) {
 	home, err := os.UserHomeDir()
 	if err != nil {
 		return "", fmt.Errorf("cannot determine home directory: %w", err)
 	}
-	return filepath.Join(home, ".config", "mqttirlearn", "config.yaml"), nil
+	return filepath.Join(home, ".config", "zigbee2mqtt-ir-blaster-learner", "config.yaml"), nil
 }
 
 // DefaultSessionPath returns the default session file location:
-// ~/.config/mqttirlearn/session.yaml
+// ~/.config/zigbee2mqtt-ir-blaster-learner/session.yaml
 func DefaultSessionPath() (string, error) {
 	home, err := os.UserHomeDir()
 	if err != nil {
 		return "", fmt.Errorf("cannot determine home directory: %w", err)
 	}
-	return filepath.Join(home, ".config", "mqttirlearn", "session.yaml"), nil
+	return filepath.Join(home, ".config", "zigbee2mqtt-ir-blaster-learner", "session.yaml"), nil
 }
 
 // Load reads a YAML config from path. A missing file is not an error — it
@@ -80,7 +80,7 @@ func Save(path string, cfg *Config) error {
 	if err := os.MkdirAll(dir, 0o755); err != nil {
 		return err
 	}
-	tmp, err := os.CreateTemp(dir, "irlearn-cfg-*.tmp")
+	tmp, err := os.CreateTemp(dir, "zigbee2mqtt-ir-blaster-learner-cfg-*.tmp")
 	if err != nil {
 		return err
 	}

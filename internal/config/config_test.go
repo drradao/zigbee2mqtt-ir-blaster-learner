@@ -142,7 +142,7 @@ func TestSave_TransientFieldsNotPersisted(t *testing.T) {
 	path := filepath.Join(t.TempDir(), "config.yaml")
 	cfg := &Config{
 		MQTT:    MQTTConfig{Host: "h", Port: 1883},
-		LogFile: "/var/log/irlearn.log",
+		LogFile: "/var/log/zigbee2mqtt-ir-blaster-learner.log",
 		Session: "/tmp/session.yaml",
 	}
 	if err := Save(path, cfg); err != nil {

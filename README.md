@@ -1,10 +1,10 @@
-# irlearn
+# zigbee2mqtt-ir-blaster-learner
 
 > A terminal-based IR code capture and replay tool for Zigbee2MQTT IR blasters.
 
 Organise commands into named sessions, replay them on demand, and script headless capture into your automation pipelines — all from the terminal.
 
-![screen shot](img/irlearn.png)
+![screen shot](img/print.png)
 
 ## Disclaimer
 
@@ -19,12 +19,12 @@ This was made to scratch my own itch and is provided as-is. Most likely, it will
 go install github.com/drradao/zigbee2mqtt-ir-blaster-learner@latest
 
 # Launch the TUI (pass --login if your MQTT broker requires authentication)
-irlearn ui
+zigbee2mqtt-ir-blaster-learner ui
 ```
 
-All config values can also be passed as flags — run `irlearn --help` for the full list.
+All config values can also be passed as flags — run `zigbee2mqtt-ir-blaster-learner --help` for the full list.
 
-**Note:** Configuration will be optionally saved to `~/.config/mqttirlearn/config.yaml` after the first run.
+**Note:** Configuration will be optionally saved to `~/.config/zigbee2mqtt-ir-blaster-learner/config.yaml` after the first run.
 
 ## Features
 
@@ -32,7 +32,7 @@ All config values can also be passed as flags — run `irlearn --help` for the f
 - **Session management** — group commands into named YAML files (e.g. `my-tv.yaml`)
 - **Instant replay** — test any captured code directly from the TUI
 - **Lock mode** — hands-free loop: auto-resends the learn command after each capture
-- **Headless capture** — `irlearn capture` prints the base64 code to stdout for scripting
+- **Headless capture** — `zigbee2mqtt-ir-blaster-learner capture` prints the base64 code to stdout for scripting
 - **Flag overrides** — any config value can be overridden per-invocation without editing files
 
 ## Documentation

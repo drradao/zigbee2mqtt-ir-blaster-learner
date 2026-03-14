@@ -77,7 +77,7 @@ func (l *loginModal) View(width, height int) string {
 	footer := StyleMuted.Render("Enter confirm · Esc dismiss")
 
 	form := lipgloss.JoinVertical(lipgloss.Left,
-		StyleTitle.Render("irlearn login"),
+		StyleTitle.Render("zigbee2mqtt-ir-blaster-learner login"),
 		"",
 		userLine,
 		passLine,

@@ -8,7 +8,7 @@ A terminal UI CLI tool for learning and replaying IR codes via a zigbee2mqtt-con
 
 ## TUI Layout
 
-![screen shot](../img/irlearn.png)
+![screen shot](../img/zigbee2mqtt-ir-blaster-learner.png)
 
 - **Left top**: Buffer pane — live stream of received IR codes
 - **Left bottom**: Session commands pane — commands saved to the current session file
@@ -77,7 +77,7 @@ save the values to the config file.
 
 ```mermaid
 flowchart LR
-    A[irlearn ui / capture] --> B{host or device empty?}
+    A[zigbee2mqtt-ir-blaster-learner ui / capture] --> B{host or device empty?}
     B -- yes --> C[Setup form — missing fields only]
     C --> D{Save?}
     D -- y --> E[Write config file]
@@ -87,16 +87,16 @@ flowchart LR
     B -- no --> G
 ```
 
-### `irlearn config`
+### `zigbee2mqtt-ir-blaster-learner config`
 
 Opens the full configuration form at any time to review or update all five settings
 (host, port, device, user, password).
 
 ### `--login` flag
 
-- **`irlearn ui --login`**: shows a credentials-only form (User + Password) before the TUI
+- **`zigbee2mqtt-ir-blaster-learner ui --login`**: shows a credentials-only form (User + Password) before the TUI
   starts. Values are not saved to disk.
-- **`irlearn capture --login`**: prompts for credentials via stdin before connecting.
+- **`zigbee2mqtt-ir-blaster-learner capture --login`**: prompts for credentials via stdin before connecting.
 
 ## Out of Scope (v1)
 

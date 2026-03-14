@@ -1,6 +1,6 @@
 # Architecture
 
-Developer guide to the internals of `irlearn`.
+Developer guide to the internals of `zigbee2mqtt-ir-blaster-learner`.
 
 ---
 
@@ -27,9 +27,9 @@ Developer guide to the internals of `irlearn`.
 ├── cmd/                            Cobra commands (transport layer)
 │   ├── root.go                     Persistent flags, logger setup, FX wiring helpers
 │   ├── preflight.go                Shared pre-flight helper (config load + setup form)
-│   ├── config.go                   `irlearn config` — interactive config editor
-│   ├── capture.go                  `irlearn capture` — headless single-shot capture
-│   └── ui.go                       `irlearn ui` — launches bubbletea TUI
+│   ├── config.go                   `zigbee2mqtt-ir-blaster-learner config` — interactive config editor
+│   ├── capture.go                  `zigbee2mqtt-ir-blaster-learner capture` — headless single-shot capture
+│   └── ui.go                       `zigbee2mqtt-ir-blaster-learner ui` — launches bubbletea TUI
 │
 └── internal/
     ├── flags/                      FlagValues value object
@@ -142,7 +142,7 @@ graph LR
 
 ## Config Loading Order
 
-1. Resolve config file path: `--config` flag → default `~/.config/mqttirlearn/config.yaml`
+1. Resolve config file path: `--config` flag → default `~/.config/zigbee2mqtt-ir-blaster-learner/config.yaml`
 2. Parse YAML into `config.Config` (missing file is not an error — yields struct with Port=1883)
 3. Apply flag overrides: only flags that were explicitly set on the command line win
    (tracked via `cobra.Command.Flags().Visit`)
@@ -209,7 +209,7 @@ sequenceDiagram
     participant FX
     participant MQTT
 
-    User->>Cobra: irlearn capture [flags]
+    User->>Cobra: zigbee2mqtt-ir-blaster-learner capture [flags]
     Cobra->>FX: fx.New(ConfigModule, MQTTModule)
     FX->>MQTT: connect to broker
     Cobra->>MQTT: Subscribe(listenTopic, handler)
