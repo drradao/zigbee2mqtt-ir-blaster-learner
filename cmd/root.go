@@ -1,4 +1,4 @@
-// Package cmd implements theapp CLI using cobra. All subcommands live in
+// Package cmd implements the app CLI using cobra. All subcommands live in
 // this package. Persistent flags are parsed here and forwarded to the FX
 // container as a flags.FlagValues value object.
 package cmd

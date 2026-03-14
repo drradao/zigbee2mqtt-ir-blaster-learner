@@ -1,5 +1,5 @@
 // Package setup implements a standalone bubbletea form used for first-run
-// configuration and theapp config command. It must not import internal/tui
+// configuration and the app config command. It must not import internal/tui
 // to avoid import cycles.
 package setup
 

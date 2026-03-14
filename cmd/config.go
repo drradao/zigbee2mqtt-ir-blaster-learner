@@ -11,7 +11,7 @@ import (
 
 var configCmd = &cobra.Command{
 	Use:   "config",
-	Short: "Editapp configuration interactively",
+	Short: "Edit app configuration interactively",
 	RunE:  runConfig,
 }
 

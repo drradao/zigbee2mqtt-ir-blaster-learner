@@ -17,7 +17,7 @@ type Mode int
 const (
 	// ModeMissing shows only empty required fields (Host, Device).
 	ModeMissing Mode = iota
-	// ModeFull shows all fields — used byapp config.
+	// ModeFull shows all fields — used by app config.
 	ModeFull
 	// ModeLogin shows only User + Password — used by --login on ui.
 	ModeLogin
