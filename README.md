@@ -45,4 +45,4 @@ All config values can also be passed as flags — run `irlearn --help` for the f
 
 ## License
 
-MIT
+The Unlicense. See [LICENSE](LICENSE) for details.
