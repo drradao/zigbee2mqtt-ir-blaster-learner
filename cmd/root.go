@@ -1,4 +1,4 @@
-// Package cmd implements the irlearn CLI using cobra. All subcommands live in
+// Package cmd implements the app CLI using cobra. All subcommands live in
 // this package. Persistent flags are parsed here and forwarded to the FX
 // container as a flags.FlagValues value object.
 package cmd
@@ -16,7 +16,7 @@ import (
 )
 
 var rootCmd = &cobra.Command{
-	Use:   "irlearn",
+	Use:   "zigbee2mqtt-ir-blaster-learner",
 	Short: "Learn and replay IR codes via zigbee2mqtt",
 }
 
@@ -33,7 +33,7 @@ func Execute() {
 }
 
 func init() {
-	rootCmd.PersistentFlags().StringVar(&globalFlags.ConfigPath, "config", "", "config file path (default: ~/.config/mqttirlearn/config.yaml)")
+	rootCmd.PersistentFlags().StringVar(&globalFlags.ConfigPath, "config", "", "config file path (default: ~/.config/zigbee2mqtt-ir-blaster-learner/config.yaml)")
 	rootCmd.PersistentFlags().StringVar(&globalFlags.MQTTHost, "mqtt-host", "", "MQTT broker host")
 	rootCmd.PersistentFlags().IntVar(&globalFlags.MQTTPort, "mqtt-port", 0, "MQTT broker port")
 	rootCmd.PersistentFlags().StringVar(&globalFlags.MQTTUser, "mqtt-user", "", "MQTT username")

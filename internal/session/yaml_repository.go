@@ -43,7 +43,7 @@ func (r *yamlRepository) Save(s *Session) error {
 	if err := os.MkdirAll(dir, 0o755); err != nil {
 		return err
 	}
-	tmp, err := os.CreateTemp(dir, "irlearn-*.tmp")
+	tmp, err := os.CreateTemp(dir, "zigbee2mqtt-ir-blaster-learner-*.tmp")
 	if err != nil {
 		return err
 	}

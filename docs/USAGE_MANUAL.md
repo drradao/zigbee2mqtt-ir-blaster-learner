@@ -1,6 +1,6 @@
 # Usage Manual
 
-End-user guide for setting up and operating `irlearn`.
+End-user guide for setting up and operating `zigbee2mqtt-ir-blaster-learner`.
 
 ---
 
@@ -20,7 +20,7 @@ End-user guide for setting up and operating `irlearn`.
 go install github.com/drradao/zigbee2mqtt-ir-blaster-learner@latest
 ```
 
-The binary is installed to `$(go env GOPATH)/bin/irlearn`. Make sure that directory is on
+The binary is installed to `$(go env GOPATH)/bin/zigbee2mqtt-ir-blaster-learner`. Make sure that directory is on
 your `PATH`.
 
 ### Build locally
@@ -28,7 +28,7 @@ your `PATH`.
 ```bash
 git clone https://github.com/drradao/zigbee2mqtt-ir-blaster-learner
 cd zigbee2mqtt-ir-blaster-learner
-go build -o irlearn .
+go build -o zigbee2mqtt-ir-blaster-learner .
 ```
 
 ---
@@ -38,13 +38,13 @@ go build -o irlearn .
 ### Config file location
 
 ```
-~/.config/mqttirlearn/config.yaml
+~/.config/zigbee2mqtt-ir-blaster-learner/config.yaml
 ```
 
 Create it before first run:
 
 ```bash
-mkdir -p ~/.config/mqttirlearn
+mkdir -p ~/.config/zigbee2mqtt-ir-blaster-learner
 ```
 
 ### Full config example
@@ -82,7 +82,7 @@ file; unset flags leave the file value intact.
 
 ## First Run
 
-If the config file is absent or any required field (`host`, `device`) is missing, `irlearn`
+If the config file is absent or any required field (`host`, `device`) is missing, `zigbee2mqtt-ir-blaster-learner`
 automatically shows an interactive setup form before attempting to connect.
 
 Fill in the required fields and press `Tab` or `Enter` to move between them. When all fields
@@ -100,8 +100,8 @@ Opens the full configuration form, even when all fields are already set. Use thi
 or change any setting interactively.
 
 ```bash
-irlearn config
-irlearn config --config /path/to/other.yaml   # edit a specific config file
+zigbee2mqtt-ir-blaster-learner config
+zigbee2mqtt-ir-blaster-learner config --config /path/to/other.yaml   # edit a specific config file
 ```
 
 Fields are pre-populated with the current config values. Navigate with `Tab`/`Shift+Tab` and
@@ -114,15 +114,15 @@ confirm with `Enter`. You are asked whether to save on exit.
 The interactive TUI is the primary interface.
 
 ```bash
-irlearn ui
-irlearn ui --session my-tv.yaml      # load a specific session file
-irlearn ui --device bedroom_ir       # override device for this session
-irlearn ui --login                   # prompt for MQTT credentials before connecting
+zigbee2mqtt-ir-blaster-learner ui
+zigbee2mqtt-ir-blaster-learner ui --session my-tv.yaml      # load a specific session file
+zigbee2mqtt-ir-blaster-learner ui --device bedroom_ir       # override device for this session
+zigbee2mqtt-ir-blaster-learner ui --login                   # prompt for MQTT credentials before connecting
 ```
 
 ### Layout
 
-![screen shot](../img/irlearn.png)
+![screen shot](../img/zigbee2mqtt-ir-blaster-learner.png)
 
 | Pane                      | What it shows                                                       |
 |---------------------------|---------------------------------------------------------------------|
@@ -151,7 +151,7 @@ irlearn ui --login                   # prompt for MQTT credentials before connec
 
 ### Step-by-step: Learning a button
 
-1. Run `irlearn ui`
+1. Run `zigbee2mqtt-ir-blaster-learner ui`
 2. Press `l` to put the IR blaster into learn mode
 3. Point your remote at the IR blaster and press the button you want to capture
 4. The IR code appears in the **Buffer** pane
@@ -167,7 +167,7 @@ irlearn ui --login                   # prompt for MQTT credentials before connec
 
 ### Lock mode
 
-Press `L` to enable lock mode. In lock mode, `irlearn` automatically re-sends the learn
+Press `L` to enable lock mode. In lock mode, `zigbee2mqtt-ir-blaster-learner` automatically re-sends the learn
 command to the device every time it receives a new IR code. This creates a continuous capture
 loop — useful when learning many buttons in sequence without pressing `l` between each one.
 
@@ -180,7 +180,7 @@ Press `L` again to disable.
 For scripting and automation — captures one IR code and prints the base64 payload to stdout.
 
 ```bash
-irlearn capture [flags]
+zigbee2mqtt-ir-blaster-learner capture [flags]
 ```
 
 ### Flags
@@ -208,14 +208,14 @@ All global flags (`--device`, `--mqtt-host`, etc.) also apply.
 ### Example — save a code to a file
 
 ```bash
-irlearn capture --device my_ir --verbose > captured.b64
+zigbee2mqtt-ir-blaster-learner capture --device my_ir --verbose > captured.b64
 ```
 
 ### Example — trigger learn mode first, then capture
 
 ```bash
 # In shell: publish learn command manually, then wait for code
-irlearn capture --timeout 60
+zigbee2mqtt-ir-blaster-learner capture --timeout 60
 ```
 
 ---
@@ -262,4 +262,4 @@ command. There is no separate "save" step — the file is always up to date.
 
 **Session file not saving**
 - Check that the directory containing the session file exists and is writable
-- Use `--log /tmp/irlearn.log` and inspect the log for write errors
+- Use `--log /tmp/zigbee2mqtt-ir-blaster-learner.log` and inspect the log for write errors

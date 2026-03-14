@@ -36,7 +36,7 @@ func newPahoClient(host string, port int, user, password string, logger *slog.Lo
 	if password != "" {
 		opts.SetPassword(password)
 	}
-	opts.SetClientID(fmt.Sprintf("irlearn-%d", time.Now().UnixNano()))
+	opts.SetClientID(fmt.Sprintf("zigbee2mqtt-ir-blaster-learner-%d", time.Now().UnixNano()))
 	opts.SetCleanSession(true)
 	opts.SetAutoReconnect(true)
 	opts.SetConnectionLostHandler(func(_ pahomqtt.Client, err error) {

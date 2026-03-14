@@ -17,7 +17,7 @@ type Mode int
 const (
 	// ModeMissing shows only empty required fields (Host, Device).
 	ModeMissing Mode = iota
-	// ModeFull shows all fields — used by irlearn config.
+	// ModeFull shows all fields — used by app config.
 	ModeFull
 	// ModeLogin shows only User + Password — used by --login on ui.
 	ModeLogin
@@ -187,9 +187,9 @@ func (m *Model) View() string {
 		return ""
 	}
 
-	title := "irlearn setup"
+	title := "zigbee2mqtt-ir-blaster-learner setup"
 	if m.mode == ModeLogin {
-		title = "irlearn login"
+		title = "zigbee2mqtt-ir-blaster-learner login"
 	}
 
 	// "Password" is 8 chars — the longest label
