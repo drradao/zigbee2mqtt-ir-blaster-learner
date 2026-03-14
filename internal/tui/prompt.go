@@ -63,6 +63,18 @@ func (p *Prompt) Update(msg tea.Msg) (submit bool, cancel bool) {
 		if !p.Masked && p.cursor < len([]rune(p.value)) {
 			p.cursor++
 		}
+	case tea.KeySpace:
+		if p.Masked {
+			p.value += " "
+			p.cursor = len([]rune(p.value))
+		} else {
+			runes := []rune(p.value)
+			tail := make([]rune, len(runes)-p.cursor)
+			copy(tail, runes[p.cursor:])
+			runes = append(runes[:p.cursor], append([]rune{' '}, tail...)...)
+			p.value = string(runes)
+			p.cursor++
+		}
 	case tea.KeyRunes:
 		if p.Masked {
 			p.value += string(km.Runes)

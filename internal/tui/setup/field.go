@@ -67,6 +67,18 @@ func (f *Field) Update(msg tea.KeyMsg) (advance, retreat, cancel bool) {
 				f.cursor++
 			}
 		}
+	case tea.KeySpace:
+		if f.masked {
+			f.value += " "
+			f.cursor = utf8.RuneCountInString(f.value)
+		} else {
+			runes := []rune(f.value)
+			tail := make([]rune, len(runes)-f.cursor)
+			copy(tail, runes[f.cursor:])
+			runes = append(runes[:f.cursor], append([]rune{' '}, tail...)...)
+			f.value = string(runes)
+			f.cursor++
+		}
 	case tea.KeyRunes:
 		if f.masked {
 			f.value += string(msg.Runes)
