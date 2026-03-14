@@ -13,12 +13,12 @@ import (
 	"github.com/spf13/cobra"
 	"go.uber.org/fx"
 
-	"github.com/dadao/zigbee2mqtt-ir-blaster-learner/internal/buffer"
-	"github.com/dadao/zigbee2mqtt-ir-blaster-learner/internal/config"
-	"github.com/dadao/zigbee2mqtt-ir-blaster-learner/internal/mqtt"
-	"github.com/dadao/zigbee2mqtt-ir-blaster-learner/internal/service"
-	"github.com/dadao/zigbee2mqtt-ir-blaster-learner/internal/session"
-	"github.com/dadao/zigbee2mqtt-ir-blaster-learner/internal/tui"
+	"github.com/drradao/zigbee2mqtt-ir-blaster-learner/internal/buffer"
+	"github.com/drradao/zigbee2mqtt-ir-blaster-learner/internal/config"
+	"github.com/drradao/zigbee2mqtt-ir-blaster-learner/internal/mqtt"
+	"github.com/drradao/zigbee2mqtt-ir-blaster-learner/internal/service"
+	"github.com/drradao/zigbee2mqtt-ir-blaster-learner/internal/session"
+	"github.com/drradao/zigbee2mqtt-ir-blaster-learner/internal/tui"
 )
 
 var uiLogin bool

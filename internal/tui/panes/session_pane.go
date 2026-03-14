@@ -5,8 +5,8 @@ import (
 
 	tea "github.com/charmbracelet/bubbletea"
 
-	"github.com/dadao/zigbee2mqtt-ir-blaster-learner/internal/session"
-	"github.com/dadao/zigbee2mqtt-ir-blaster-learner/internal/tui/styles"
+	"github.com/drradao/zigbee2mqtt-ir-blaster-learner/internal/session"
+	"github.com/drradao/zigbee2mqtt-ir-blaster-learner/internal/tui/styles"
 )
 
 // SessionPane displays the commands saved in the current session file.

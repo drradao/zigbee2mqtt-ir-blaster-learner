@@ -1,4 +1,4 @@
-module github.com/dadao/zigbee2mqtt-ir-blaster-learner
+module github.com/drradao/zigbee2mqtt-ir-blaster-learner
 
 go 1.25.5
 

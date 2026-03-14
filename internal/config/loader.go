@@ -1,6 +1,6 @@
 package config
 
-import "github.com/dadao/zigbee2mqtt-ir-blaster-learner/internal/flags"
+import "github.com/drradao/zigbee2mqtt-ir-blaster-learner/internal/flags"
 
 // ApplyFlagOverrides copies flag values into cfg only for flags the user
 // explicitly set on the command line.

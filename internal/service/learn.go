@@ -7,7 +7,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/dadao/zigbee2mqtt-ir-blaster-learner/internal/mqtt"
+	"github.com/drradao/zigbee2mqtt-ir-blaster-learner/internal/mqtt"
 )
 
 // learnCommandPayload is the static JSON payload sent to trigger IR learning.

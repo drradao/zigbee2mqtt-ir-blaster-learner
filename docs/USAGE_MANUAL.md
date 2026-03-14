@@ -17,7 +17,7 @@ End-user guide for setting up and operating `irlearn`.
 ### From source
 
 ```bash
-go install github.com/dadao/zigbee2mqtt-ir-blaster-learner@latest
+go install github.com/drradao/zigbee2mqtt-ir-blaster-learner@latest
 ```
 
 The binary is installed to `$(go env GOPATH)/bin/irlearn`. Make sure that directory is on
@@ -26,7 +26,7 @@ your `PATH`.
 ### Build locally
 
 ```bash
-git clone https://github.com/dadao/zigbee2mqtt-ir-blaster-learner
+git clone https://github.com/drradao/zigbee2mqtt-ir-blaster-learner
 cd zigbee2mqtt-ir-blaster-learner
 go build -o irlearn .
 ```

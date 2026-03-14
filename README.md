@@ -16,7 +16,7 @@ This was made to scratch my own itch and is provided as-is. Most likely, it will
 
 ```bash
 # Build
-go install github.com/dadao/zigbee2mqtt-ir-blaster-learner@latest
+go install github.com/drradao/zigbee2mqtt-ir-blaster-learner@latest
 
 # Launch the TUI (pass --login if your MQTT broker requires authentication)
 irlearn ui

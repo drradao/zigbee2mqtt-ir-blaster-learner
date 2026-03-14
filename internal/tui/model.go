@@ -5,11 +5,11 @@ import (
 
 	tea "github.com/charmbracelet/bubbletea"
 
-	"github.com/dadao/zigbee2mqtt-ir-blaster-learner/internal/buffer"
-	"github.com/dadao/zigbee2mqtt-ir-blaster-learner/internal/mqtt"
-	"github.com/dadao/zigbee2mqtt-ir-blaster-learner/internal/service"
-	"github.com/dadao/zigbee2mqtt-ir-blaster-learner/internal/session"
-	"github.com/dadao/zigbee2mqtt-ir-blaster-learner/internal/tui/panes"
+	"github.com/drradao/zigbee2mqtt-ir-blaster-learner/internal/buffer"
+	"github.com/drradao/zigbee2mqtt-ir-blaster-learner/internal/mqtt"
+	"github.com/drradao/zigbee2mqtt-ir-blaster-learner/internal/service"
+	"github.com/drradao/zigbee2mqtt-ir-blaster-learner/internal/session"
+	"github.com/drradao/zigbee2mqtt-ir-blaster-learner/internal/tui/panes"
 )
 
 type activePane int

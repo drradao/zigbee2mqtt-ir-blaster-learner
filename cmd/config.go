@@ -5,8 +5,8 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/dadao/zigbee2mqtt-ir-blaster-learner/internal/config"
-	"github.com/dadao/zigbee2mqtt-ir-blaster-learner/internal/tui/setup"
+	"github.com/drradao/zigbee2mqtt-ir-blaster-learner/internal/config"
+	"github.com/drradao/zigbee2mqtt-ir-blaster-learner/internal/tui/setup"
 )
 
 var configCmd = &cobra.Command{

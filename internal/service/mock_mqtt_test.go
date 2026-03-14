@@ -1,6 +1,6 @@
 package service_test
 
-import "github.com/dadao/zigbee2mqtt-ir-blaster-learner/internal/mqtt"
+import "github.com/drradao/zigbee2mqtt-ir-blaster-learner/internal/mqtt"
 
 type publishCall struct {
 	topic   string

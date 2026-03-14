@@ -5,7 +5,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/dadao/zigbee2mqtt-ir-blaster-learner/internal/service"
+	"github.com/drradao/zigbee2mqtt-ir-blaster-learner/internal/service"
 )
 
 func TestSendLearnCommand_Happy(t *testing.T) {

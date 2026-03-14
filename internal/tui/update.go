@@ -7,7 +7,7 @@ import (
 	"github.com/atotto/clipboard"
 	tea "github.com/charmbracelet/bubbletea"
 
-	"github.com/dadao/zigbee2mqtt-ir-blaster-learner/internal/session"
+	"github.com/drradao/zigbee2mqtt-ir-blaster-learner/internal/session"
 )
 
 // lockDebounce is the minimum interval between auto learn sends in lock mode.

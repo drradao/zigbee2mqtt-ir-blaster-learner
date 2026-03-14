@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/dadao/zigbee2mqtt-ir-blaster-learner/internal/mqtt"
+	"github.com/drradao/zigbee2mqtt-ir-blaster-learner/internal/mqtt"
 )
 
 // ReplayService publishes a stored IR code back to the device.

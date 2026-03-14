@@ -12,7 +12,7 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
 
-	"github.com/dadao/zigbee2mqtt-ir-blaster-learner/internal/flags"
+	"github.com/drradao/zigbee2mqtt-ir-blaster-learner/internal/flags"
 )
 
 var rootCmd = &cobra.Command{

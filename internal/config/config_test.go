@@ -6,7 +6,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/dadao/zigbee2mqtt-ir-blaster-learner/internal/flags"
+	"github.com/drradao/zigbee2mqtt-ir-blaster-learner/internal/flags"
 )
 
 func TestLoad_MissingFile(t *testing.T) {

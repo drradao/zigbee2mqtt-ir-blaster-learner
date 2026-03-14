@@ -5,7 +5,7 @@ package tui
 import (
 	"github.com/charmbracelet/lipgloss"
 
-	"github.com/dadao/zigbee2mqtt-ir-blaster-learner/internal/tui/styles"
+	"github.com/drradao/zigbee2mqtt-ir-blaster-learner/internal/tui/styles"
 )
 
 // Re-export shared styles under the names used by tui-package code.

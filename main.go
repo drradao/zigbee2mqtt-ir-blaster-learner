@@ -1,6 +1,6 @@
 package main
 
-import "github.com/dadao/zigbee2mqtt-ir-blaster-learner/cmd"
+import "github.com/drradao/zigbee2mqtt-ir-blaster-learner/cmd"
 
 func main() {
 	cmd.Execute()

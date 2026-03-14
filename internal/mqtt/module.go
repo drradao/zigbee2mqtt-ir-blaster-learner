@@ -6,7 +6,7 @@ import (
 
 	"go.uber.org/fx"
 
-	"github.com/dadao/zigbee2mqtt-ir-blaster-learner/internal/config"
+	"github.com/drradao/zigbee2mqtt-ir-blaster-learner/internal/config"
 )
 
 // Module is the FX module that provides MQTTClient and manages its lifecycle.

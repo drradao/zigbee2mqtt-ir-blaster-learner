@@ -1,7 +1,7 @@
 // Package tui implements the bubbletea-based terminal UI.
 package tui
 
-import "github.com/dadao/zigbee2mqtt-ir-blaster-learner/internal/buffer"
+import "github.com/drradao/zigbee2mqtt-ir-blaster-learner/internal/buffer"
 
 // MQTTMessageReceived is dispatched to the bubbletea event loop when a new
 // IR code arrives from the broker.

@@ -6,7 +6,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/dadao/zigbee2mqtt-ir-blaster-learner/internal/tui/styles"
+	"github.com/drradao/zigbee2mqtt-ir-blaster-learner/internal/tui/styles"
 )
 
 // PreviewPane shows decoded details of the selected IR payload.

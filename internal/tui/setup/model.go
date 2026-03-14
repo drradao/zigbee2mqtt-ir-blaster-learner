@@ -7,8 +7,8 @@ import (
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
 
-	"github.com/dadao/zigbee2mqtt-ir-blaster-learner/internal/config"
-	"github.com/dadao/zigbee2mqtt-ir-blaster-learner/internal/tui/styles"
+	"github.com/drradao/zigbee2mqtt-ir-blaster-learner/internal/config"
+	"github.com/drradao/zigbee2mqtt-ir-blaster-learner/internal/tui/styles"
 )
 
 // Mode controls which fields are shown in the setup form.

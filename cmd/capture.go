@@ -12,7 +12,7 @@ import (
 	"github.com/spf13/cobra"
 	"go.uber.org/fx"
 
-	"github.com/dadao/zigbee2mqtt-ir-blaster-learner/internal/mqtt"
+	"github.com/drradao/zigbee2mqtt-ir-blaster-learner/internal/mqtt"
 )
 
 var captureTimeout int

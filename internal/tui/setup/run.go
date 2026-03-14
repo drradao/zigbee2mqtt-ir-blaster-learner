@@ -5,7 +5,7 @@ import (
 
 	tea "github.com/charmbracelet/bubbletea"
 
-	"github.com/dadao/zigbee2mqtt-ir-blaster-learner/internal/config"
+	"github.com/drradao/zigbee2mqtt-ir-blaster-learner/internal/config"
 )
 
 // Run starts the setup form with alt-screen and returns the result when it exits.

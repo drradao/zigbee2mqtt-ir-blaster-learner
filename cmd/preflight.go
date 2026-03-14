@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/dadao/zigbee2mqtt-ir-blaster-learner/internal/config"
-	"github.com/dadao/zigbee2mqtt-ir-blaster-learner/internal/flags"
-	"github.com/dadao/zigbee2mqtt-ir-blaster-learner/internal/tui/setup"
+	"github.com/drradao/zigbee2mqtt-ir-blaster-learner/internal/config"
+	"github.com/drradao/zigbee2mqtt-ir-blaster-learner/internal/flags"
+	"github.com/drradao/zigbee2mqtt-ir-blaster-learner/internal/tui/setup"
 )
 
 // ErrSetupAborted is returned when the user cancels the setup or login form.

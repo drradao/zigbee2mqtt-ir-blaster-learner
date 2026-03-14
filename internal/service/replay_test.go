@@ -5,7 +5,7 @@ import (
 	"errors"
 	"testing"
 
-	"github.com/dadao/zigbee2mqtt-ir-blaster-learner/internal/service"
+	"github.com/drradao/zigbee2mqtt-ir-blaster-learner/internal/service"
 )
 
 func TestReplay_Happy(t *testing.T) {

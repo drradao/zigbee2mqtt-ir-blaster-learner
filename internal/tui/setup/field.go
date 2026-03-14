@@ -10,7 +10,7 @@ import (
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
 
-	"github.com/dadao/zigbee2mqtt-ir-blaster-learner/internal/tui/styles"
+	"github.com/drradao/zigbee2mqtt-ir-blaster-learner/internal/tui/styles"
 )
 
 // Field is a single text input field in the setup form.
